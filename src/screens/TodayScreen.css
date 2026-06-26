@@ -1,0 +1,53 @@
+.today-head h1 {
+  margin-top: var(--s-1);
+}
+
+.streak {
+  border-radius: var(--r-card);
+  padding: var(--s-3) var(--s-4);
+  font-size: 0.95rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.streak--active {
+  background: var(--primary-wash);
+  border-color: color-mix(in oklch, var(--primary) 30%, var(--line));
+}
+.streak--back {
+  background: var(--accent-wash);
+  border-color: color-mix(in oklch, var(--accent) 30%, var(--line));
+}
+
+.today-advice {
+  border-radius: var(--r-control);
+  padding: var(--s-4);
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.today-advice h2 {
+  font-size: 1.2rem;
+}
+.today-advice--thriving {
+  background: var(--q-thriving-wash);
+}
+.today-advice--stressed {
+  background: var(--q-stressed-wash);
+}
+.today-advice--numb {
+  background: var(--q-numb-wash);
+}
+.today-advice--flat {
+  background: var(--q-flat-wash);
+}
+.today-advice .btn {
+  align-self: flex-start;
+  margin-top: var(--s-2);
+}
+.today-sample {
+  font-size: 0.8rem;
+}
+.today-profile h3 {
+  margin: var(--s-1) 0;
+}

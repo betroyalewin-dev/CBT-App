@@ -1,0 +1,27 @@
+.log-intro h1 {
+  margin-bottom: var(--s-1);
+}
+.chiprow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.log-custom,
+.log-note {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  padding: var(--s-3);
+}
+.log-custom {
+  min-height: 48px;
+}
+.log-note {
+  resize: vertical;
+}
+.log-save {
+  position: sticky;
+  bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  margin-top: var(--s-2);
+}

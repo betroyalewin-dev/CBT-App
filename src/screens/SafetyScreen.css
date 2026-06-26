@@ -1,0 +1,118 @@
+.safety-crisis {
+  background: var(--safety-wash);
+  border: 1px solid color-mix(in oklch, var(--safety) 40%, var(--line));
+  border-radius: var(--r-card);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.safety-lead {
+  font-size: 1.05rem;
+  font-family: var(--font-display);
+  line-height: 1.45;
+}
+.safety-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.safety-call {
+  background: var(--safety);
+  color: oklch(0.99 0.01 25);
+}
+.safety-call:hover {
+  background: color-mix(in oklch, var(--safety) 88%, black);
+}
+.safety-text {
+  background: var(--surface);
+  border: 1px solid var(--safety);
+  color: var(--safety);
+}
+.safety-note {
+  font-size: 0.82rem;
+}
+
+.safety-plan-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.safety-field-label {
+  font-weight: 600;
+}
+.safety-field-hint {
+  font-size: 0.82rem;
+}
+.safety-field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  padding: var(--s-3);
+  resize: vertical;
+}
+.safety-readback h3 {
+  font-size: 0.95rem;
+  margin-bottom: var(--s-1);
+}
+.safety-readback ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.safety-readback + .safety-readback {
+  margin-top: var(--s-3);
+}
+
+.breathe-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s-3);
+}
+.breathe-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4) 0;
+}
+.breathe-orb {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--primary-wash), var(--primary));
+  opacity: 0.55;
+}
+.breathe-orb.is-on {
+  animation: breathe 9.5s var(--ease-out) infinite;
+}
+.breathe-word {
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.7);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.85;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .breathe-orb.is-on {
+    animation: breathe-fade 4s ease-in-out infinite;
+  }
+  @keyframes breathe-fade {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+}

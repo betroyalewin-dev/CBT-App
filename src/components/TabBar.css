@@ -1,0 +1,59 @@
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--content-max);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-1);
+  padding: var(--s-2) var(--s-3) calc(var(--s-2) + env(safe-area-inset-bottom));
+  background: color-mix(in oklch, var(--surface) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+  z-index: var(--z-sticky);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 54px;
+  padding: var(--s-1);
+  border-radius: var(--r-control);
+  text-decoration: none;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  transition: color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.tab.is-active {
+  color: var(--primary-strong);
+  background: var(--primary-wash);
+}
+.tab--safety.is-active {
+  color: var(--safety);
+  background: var(--safety-wash);
+}
+.tab--safety {
+  color: var(--safety);
+}
+
+/* the central Log tab reads as the primary action */
+.tab--primary svg {
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-radius: 50%;
+  padding: 6px;
+  box-shadow: var(--shadow-1);
+}
+.tab--primary.is-active svg {
+  background: var(--primary-strong);
+}
+.tab--primary.is-active {
+  background: transparent;
+}

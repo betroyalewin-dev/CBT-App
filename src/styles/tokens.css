@@ -1,0 +1,98 @@
+:root {
+  /* ── Color · light (default) ─────────────────────────────────── */
+  --bg: oklch(0.985 0.004 220);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.965 0.006 220);
+  --ink: oklch(0.24 0.02 240);
+  --ink-muted: oklch(0.46 0.02 240);
+  --line: oklch(0.9 0.006 220);
+  --primary: oklch(0.55 0.1 205);
+  --primary-strong: oklch(0.48 0.11 205);
+  --primary-ink: oklch(0.99 0.005 205);
+  --primary-wash: oklch(0.95 0.03 205);
+  --accent: oklch(0.66 0.14 45);
+  --accent-wash: oklch(0.95 0.04 45);
+
+  /* Quadrant palette — shared by mood grid + dashboard 2×2 */
+  --q-thriving: oklch(0.7 0.11 165);
+  --q-stressed: oklch(0.74 0.13 70);
+  --q-numb: oklch(0.66 0.07 255);
+  --q-flat: oklch(0.62 0.12 20);
+  --q-thriving-wash: oklch(0.95 0.04 165);
+  --q-stressed-wash: oklch(0.96 0.05 70);
+  --q-numb-wash: oklch(0.95 0.025 255);
+  --q-flat-wash: oklch(0.96 0.04 20);
+
+  --safety: oklch(0.55 0.16 25);
+  --safety-wash: oklch(0.96 0.04 25);
+
+  /* ── Type ────────────────────────────────────────────────────── */
+  --font-display: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ── Spacing (varied for rhythm) ─────────────────────────────── */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+
+  /* ── Radius ──────────────────────────────────────────────────── */
+  --r-control: 10px;
+  --r-card: 16px;
+  --r-pill: 999px;
+
+  /* ── Elevation ───────────────────────────────────────────────── */
+  --shadow-1: 0 1px 2px oklch(0.4 0.02 240 / 0.06),
+    0 1px 3px oklch(0.4 0.02 240 / 0.08);
+  --shadow-2: 0 6px 24px oklch(0.4 0.02 240 / 0.1);
+
+  /* ── Motion ──────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur: 220ms;
+
+  /* ── Layout ──────────────────────────────────────────────────── */
+  --content-max: 30rem;
+  --z-sticky: 100;
+  --z-modal-backdrop: 200;
+  --z-modal: 210;
+  --z-toast: 300;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: oklch(0.2 0.015 240);
+    --surface: oklch(0.245 0.018 240);
+    --surface-2: oklch(0.29 0.02 240);
+    --ink: oklch(0.95 0.01 220);
+    --ink-muted: oklch(0.74 0.015 220);
+    --line: oklch(0.36 0.02 240);
+    --primary: oklch(0.7 0.1 205);
+    --primary-strong: oklch(0.76 0.1 205);
+    --primary-ink: oklch(0.18 0.02 240);
+    --primary-wash: oklch(0.32 0.05 205);
+    --accent: oklch(0.74 0.13 50);
+    --accent-wash: oklch(0.32 0.06 50);
+
+    --q-thriving: oklch(0.74 0.11 165);
+    --q-stressed: oklch(0.78 0.12 70);
+    --q-numb: oklch(0.7 0.07 255);
+    --q-flat: oklch(0.66 0.13 20);
+    --q-thriving-wash: oklch(0.34 0.05 165);
+    --q-stressed-wash: oklch(0.36 0.06 70);
+    --q-numb-wash: oklch(0.33 0.03 255);
+    --q-flat-wash: oklch(0.35 0.06 20);
+
+    --safety: oklch(0.68 0.16 28);
+    --safety-wash: oklch(0.33 0.06 25);
+
+    --shadow-1: 0 1px 2px oklch(0 0 0 / 0.3), 0 1px 3px oklch(0 0 0 / 0.4);
+    --shadow-2: 0 6px 24px oklch(0 0 0 / 0.45);
+  }
+}
