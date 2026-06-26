@@ -62,14 +62,33 @@ device territory and is the honest framing.
 
 ## 3. Core dimensions we capture (the heart of everything)
 
-Every activity log scores three quick things. This is the single most important
-design decision in the app — it's what makes the data diagnostic instead of flat.
+Every activity log captures mood as a **2D point** plus two BA ratings. This is
+the single most important design decision in the app — it's what makes the data
+diagnostic instead of flat.
 
 | Dimension | Question | Range | Feeds |
 |-----------|----------|-------|-------|
-| **Mood** | How do you feel right now? | 1–10 | Both axes, trend |
-| **Pleasure (P)** | How enjoyable was this? | 0–10 | Reward axis (anhedonia) |
+| **Valence** | Pleasant ↔ unpleasant? | −5…+5 (continuous) | Reward axis, trend |
+| **Arousal** | Calm/low-energy ↔ activated/high-energy? | −5…+5 (continuous) | Stress axis, trend |
+| **Pleasure (P)** | How enjoyable was this activity? | 0–10 | Reward axis (anhedonia) |
 | **Mastery (M)** | Sense of accomplishment? | 0–10 | Meaning / "rich-kid" pole |
+
+**Mood = a valence × arousal grid (the circumplex model), not a 1–10 slider.**
+The user places one dot on a 2D pad; discrete emotion words are *regions* on that
+plane (low-valence + high-arousal → anxious/agitated; low-valence + low-arousal →
+sad/numb/flat; high-valence + low-arousal → calm/content; high-valence +
+high-arousal → excited). Why this over a 1–10 scale:
+- **Arousal is what separates the two poles.** "Numb" (low arousal) vs
+  "drowning/agitated" (high arousal) both read as *low* on a 1–10 mood scale but
+  are opposite quadrants on our dashboard. A single scale can't place the dot
+  correctly; the grid can.
+- **Stays continuous** → trends, correlations, and the meter all work, unlike a
+  categorical mood list.
+- **Same coordinate system as the dashboard:** arousal ≈ stress axis, valence ≈
+  reward/pleasant axis (see §5.3), so mood capture and the 2×2 pad are one model.
+- **Naming the emotion is therapeutic** ("affect labeling" down-regulates
+  distress). Optional rich path lets the user tag a specific emotion word.
+- Cost: a 2D grid needs a 5-second "tap where you are" tutorial on first use.
 
 Why P and M separately (this is the BA insight): an activity can be high-pleasure
 / low-mastery (scrolling, junk food), low-pleasure / high-mastery (paying bills,
@@ -78,7 +97,7 @@ can't see this; "your mood is okay but mastery has been near-zero all week" is a
 real, actionable finding that pure mood tracking can never surface.
 
 **Anticipated vs. actual:** when an activity is *planned/scheduled*, the user
-predicts P/M/mood beforehand, then rates actual afterward. Depression
+predicts P/M and the mood point beforehand, then rates actual afterward. Depression
 systematically under-predicts ("this won't help"). Showing the gap ("you expected
 a 3, it was a 6") is therapeutic *and* is the seed of the Experiments feature.
 
@@ -134,7 +153,8 @@ chore, the dataset dies. Target: **1–2 taps for a fast log**, deeper detail op
 
 **Fast path (2 taps):**
 1. Tap (+) → quick-pick a recent/favorite activity (or "just a mood check").
-2. Set Mood, P, M on three sliders that default to last value. Save.
+2. Tap your spot on the **mood grid** (valence × arousal), set P and M sliders
+   (default to last value). Save. A pure mood check can be a single grid tap.
 
 **Rich path (optional expand):**
 - Context (cheap, high-signal): time (auto), who with, where, energy, sleep.
@@ -170,8 +190,11 @@ The home screen. Two parts:
                           ▼
             LOW REWARD (anhedonia / nothing lands)
 ```
-- A dot shows the user's current position, computed from recent P/M (reward axis)
-  and mood/stress signals (stress axis).
+- A dot shows the user's current position. **It shares the mood grid's
+  coordinate system:** the stress axis is driven by recent **arousal** (+ load
+  signals), the reward axis by recent **valence and P/M**. Because logging mood
+  *is* placing a valence×arousal point, the dashboard dot is largely a smoothed
+  aggregate of the user's own mood taps — not a separate, mysterious computation.
 - **Calibration:** default to a **smoothed ~3-day rolling** position so the dot
   isn't jumpy, with **hourly drill-down** on tap. (Confirm in §9.)
 - Each quadrant has *different* advice. Drowning → reduce load, soothe, ask for
@@ -236,9 +259,11 @@ User
   └─ ActivityLog[]
         ├─ timestamp
         ├─ activity_id / label
-        ├─ mood (1–10), pleasure (0–10), mastery (0–10)
+        ├─ mood: {valence (−5…+5), arousal (−5…+5)}   # circumplex grid point
+        ├─ emotion_tag?: label                         # optional rich-path
+        ├─ pleasure (0–10), mastery (0–10)
         ├─ planned: bool
-        ├─ anticipated: {mood, pleasure, mastery}   # if planned
+        ├─ anticipated: {valence, arousal, pleasure, mastery}   # if planned
         ├─ context: {who, where, energy, sleep}
         ├─ avoidance: {trigger, response, pattern, alt_coping}  # TRAP/TRAC
         └─ note / voice_transcript
@@ -289,8 +314,9 @@ quests, values/goals (ACT) layer, micro-psychoeducation.
 
 1. **Dashboard calibration:** confirm 3-day smoothed default + hourly drill-down.
 2. **PHQ-9 re-baseline cadence:** every 2 weeks? Monthly?
-3. **Exact axis scoring:** which items map to reward vs stress, and how the dot's
-   x/y is computed from P/M/mood.
+3. **Exact axis scoring:** weighting of the smoothing (how much recent
+   valence/arousal vs. P/M and load signals contribute to each dashboard axis),
+   and which onboarding items seed the initial reward/stress placement.
 4. **Platform:** native (better passive sensing + notifications) vs web first?
 5. **Data/privacy posture:** where does sensitive mental-health data live; what's
    the de-identification standard before any aggregation?
@@ -302,5 +328,8 @@ quests, values/goals (ACT) layer, micro-psychoeducation.
 
 - 2026-06-26 — Dashboard will be a **2×2 reward×stress pad**, not a single slider.
 - 2026-06-26 — Core captures **Mood + Pleasure + Mastery** per activity (BA).
+- 2026-06-26 — Mood is a **valence × arousal grid (circumplex)**, not a 1–10
+  scale or a discrete mood list. Shares the dashboard's coordinate system; arousal
+  is what distinguishes the numb vs. drowning poles. Optional emotion-word tag.
 - 2026-06-26 — Insights are framed as **experiments**, never verdicts.
 - 2026-06-26 — Safety routing is **MVP**, not later.
