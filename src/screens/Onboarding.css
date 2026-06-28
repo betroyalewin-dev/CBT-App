@@ -1,0 +1,84 @@
+.onboard {
+  padding-bottom: var(--s-8);
+}
+.onboard-progress {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.onboard-progress span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--primary);
+  border-radius: var(--r-pill);
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.onboard-welcome {
+  padding-top: var(--s-5);
+}
+.onboard-mark {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 32% 30%, var(--accent), var(--primary) 70%);
+  box-shadow: var(--shadow-2);
+}
+.onboard-welcome h1 {
+  font-size: clamp(1.9rem, 1.4rem + 2.5vw, 2.6rem);
+}
+.onboard-promises {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.onboard-promises li {
+  position: relative;
+  padding-left: 1.6rem;
+  color: var(--ink);
+}
+.onboard-promises li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.onboard-step-head h1 {
+  font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2rem);
+  margin-bottom: var(--s-2);
+}
+.onboard-items {
+  gap: var(--s-5);
+}
+.onboard-next {
+  margin-top: var(--s-3);
+}
+
+.onboard-profile h1 {
+  font-size: clamp(1.7rem, 1.3rem + 2vw, 2.3rem);
+}
+.onboard-recs {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.onboard-safety-lead {
+  background: var(--safety-wash);
+  border: 1px solid color-mix(in oklch, var(--safety) 35%, var(--line));
+  border-radius: var(--r-card);
+  padding: var(--s-5);
+}
+.onboard-safety-lead h1 {
+  font-size: 1.6rem;
+  margin-bottom: var(--s-2);
+}

@@ -1,0 +1,52 @@
+.insights header h1 {
+  margin-bottom: var(--s-2);
+}
+.insight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  align-items: flex-start;
+}
+.insight-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-pill);
+}
+.insight-tag--lever {
+  background: var(--q-thriving-wash);
+  color: color-mix(in oklch, var(--q-thriving) 70%, black);
+}
+.insight-tag--mastery-gap {
+  background: var(--q-numb-wash);
+  color: color-mix(in oklch, var(--q-numb) 70%, black);
+}
+.insight-tag--prediction-gap {
+  background: var(--accent-wash);
+  color: color-mix(in oklch, var(--accent) 72%, black);
+}
+.insight-text {
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.insight-exp {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+}
+.insight-foot {
+  font-size: 0.8rem;
+}
+.insights-empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  align-items: flex-start;
+}

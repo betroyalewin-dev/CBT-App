@@ -1,0 +1,173 @@
+.moodgrid-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  align-items: center;
+}
+
+.moodgrid {
+  position: relative;
+  width: 100%;
+  max-width: 22rem;
+  aspect-ratio: 1;
+  border-radius: var(--r-card);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.mg-q {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+}
+/* tl: unpleasant + activated → agitated (flat-rose family) */
+.mg-q--tl {
+  top: 0;
+  left: 0;
+  background: var(--q-flat-wash);
+}
+/* tr: pleasant + activated → excited (stressed-amber family) */
+.mg-q--tr {
+  top: 0;
+  right: 0;
+  background: var(--q-stressed-wash);
+}
+/* bl: unpleasant + calm → numb/flat (numb-slate family) */
+.mg-q--bl {
+  bottom: 0;
+  left: 0;
+  background: var(--q-numb-wash);
+}
+/* br: pleasant + calm → calm/content (thriving-green family) */
+.mg-q--br {
+  bottom: 0;
+  right: 0;
+  background: var(--q-thriving-wash);
+}
+
+.mg-axis {
+  position: absolute;
+  background: var(--line);
+}
+.mg-axis--v {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+.mg-axis--h {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.mg-label {
+  position: absolute;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+  padding: var(--s-2);
+  pointer-events: none;
+  max-width: 45%;
+}
+.mg-label--tl {
+  top: 0;
+  left: 0;
+}
+.mg-label--tr {
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+.mg-label--bl {
+  bottom: 0;
+  left: 0;
+}
+.mg-label--br {
+  bottom: 0;
+  right: 0;
+  text-align: right;
+}
+
+.mg-edge {
+  position: absolute;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.mg-edge--top {
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.mg-edge--bottom {
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.mg-edge--left {
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: left center;
+}
+.mg-edge--right {
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: right center;
+}
+
+.mg-dot {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid var(--surface);
+  box-shadow: var(--shadow-2);
+  transform: translate(-50%, -50%);
+  transition: left var(--dur) var(--ease-out), top var(--dur) var(--ease-out);
+}
+.mg-dot--ghost {
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: 2px dashed var(--accent);
+  box-shadow: none;
+}
+
+.mg-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+  background: var(--surface);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-pill);
+  border: 1px dashed var(--line);
+  pointer-events: none;
+}
+
+.mg-readout {
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.mg-readout strong {
+  font-family: var(--font-display);
+}
+
+/* dragging shouldn't animate the dot (1:1 with finger) */
+.moodgrid:active .mg-dot {
+  transition: none;
+}
