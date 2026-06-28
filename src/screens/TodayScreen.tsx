@@ -6,6 +6,7 @@ import { computeDashboard } from "../domain/dashboard";
 import { computeStreak } from "../domain/streak";
 import { QUADRANT_META } from "../domain/mood";
 import { PROFILES } from "../domain/profiles";
+import { GrowthMeter } from "../components/GrowthMeter";
 import "./TodayScreen.css";
 
 function greeting(now = new Date()): string {
@@ -30,6 +31,8 @@ export function TodayScreen() {
       </header>
 
       <StreakBadge streak={streak} />
+
+      {state.logs.length > 0 && <GrowthMeter xp={state.xp} />}
 
       <section className="panel stack today-board">
         <QuadrantPad

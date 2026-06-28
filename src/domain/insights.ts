@@ -11,6 +11,8 @@ export interface Insight {
   sampleSize: number;
   /** Seed for the Experiments feature. */
   experimentPrompt: string;
+  /** When the insight points at a specific activity, the label to pre-seed an experiment with. */
+  activityLabel?: string;
 }
 
 function mean(xs: number[]): number {
@@ -48,6 +50,7 @@ export function generateInsights(
         text: `On the ${group.length} times you logged "${label}", your mood averaged ${lift.toFixed(1)} higher than usual. Small sample — worth testing, not proof.`,
         sampleSize: group.length,
         experimentPrompt: `Try "${label}" on purpose this week and predict how it'll feel beforehand.`,
+        activityLabel: label,
       });
     }
   }

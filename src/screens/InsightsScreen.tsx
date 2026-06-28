@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useStore } from "../store/store";
 import { generateInsights, type Insight } from "../domain/insights";
+import { ExperimentsPanel } from "../components/ExperimentsPanel";
 import "./InsightsScreen.css";
 
 export function InsightsScreen() {
   const { state } = useStore();
   const insights = generateInsights(state.logs);
+  const [seed, setSeed] = useState<string | undefined>(undefined);
+  const expRef = useRef<HTMLDivElement>(null);
+
+  function startExperiment(label?: string) {
+    setSeed(label);
+    expRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <div className="stack insights">
@@ -17,6 +25,10 @@ export function InsightsScreen() {
           noisy and confounded, so we hand you a hypothesis, not a prescription.
         </p>
       </header>
+
+      <div ref={expRef}>
+        <ExperimentsPanel key={seed ?? "none"} seedLabel={seed} />
+      </div>
 
       {state.logs.length < 3 ? (
         <div className="panel insights-empty">
@@ -40,7 +52,7 @@ export function InsightsScreen() {
       ) : (
         <div className="stack">
           {insights.map((ins) => (
-            <InsightCard key={ins.id} insight={ins} />
+            <InsightCard key={ins.id} insight={ins} onStart={startExperiment} />
           ))}
         </div>
       )}
@@ -48,7 +60,13 @@ export function InsightsScreen() {
   );
 }
 
-function InsightCard({ insight }: { insight: Insight }) {
+function InsightCard({
+  insight,
+  onStart,
+}: {
+  insight: Insight;
+  onStart: (label?: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <article className="panel insight">
@@ -64,12 +82,15 @@ function InsightCard({ insight }: { insight: Insight }) {
         <div className="insight-exp">
           <h3>Turn it into an experiment</h3>
           <p className="muted">{insight.experimentPrompt}</p>
-          <Link className="btn btn--primary" to="/log">
-            Start the experiment
-          </Link>
+          <button
+            className="btn btn--primary"
+            onClick={() => onStart(insight.activityLabel)}
+          >
+            Set up this experiment
+          </button>
           <p className="muted insight-foot">
-            You'll predict first, then log how it actually went. The gap is the
-            whole point.
+            We'll track it for a couple of weeks and read it back as a hunch — the
+            gap between what you expect and what happens is the whole point.
           </p>
         </div>
       ) : (

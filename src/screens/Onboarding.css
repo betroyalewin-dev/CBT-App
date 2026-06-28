@@ -1,5 +1,45 @@
 .onboard {
   padding-bottom: var(--s-8);
+  /* local motion vocabulary */
+  --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-stage: 420ms;
+  --stage-shift: 22px;
+  overflow-x: clip; /* contain the off-axis slide of incoming stages */
+}
+
+/* ── Top bar: back affordance + progress ─────────────────────── */
+.onboard-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.onboard-back {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-left: calc(-1 * var(--s-2));
+  border-radius: var(--r-pill);
+  border: none;
+  background: transparent;
+  color: var(--ink-muted);
+  transition: background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out), opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+}
+.onboard-back:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.onboard-back.is-hidden {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+}
+
+.onboard-topbar .onboard-progress {
+  flex: 1;
 }
 .onboard-progress {
   height: 6px;
@@ -11,10 +51,129 @@
   display: block;
   height: 100%;
   width: 100%;
-  background: var(--primary);
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    color-mix(in oklch, var(--primary) 70%, var(--accent))
+  );
   border-radius: var(--r-pill);
   transform-origin: left center;
-  transition: transform var(--dur) var(--ease-out);
+  transition: transform 520ms var(--ease-glide);
+}
+
+/* ── Stage transition: each step arrives, direction-aware ────── */
+.onboard-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  animation: stage-in var(--dur-stage) var(--ease-glide) both;
+}
+.onboard-stage[data-dir="back"] {
+  animation-name: stage-in-back;
+}
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--stage-shift), 0, 0);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@keyframes stage-in-back {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(-1 * var(--stage-shift)), 0, 0);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+/* ── Inner stagger: list items settle in after the stage ─────── */
+.onboard-stagger > * {
+  animation: stagger-rise 460ms var(--ease-glide) both;
+  animation-delay: calc(90ms + var(--i, 0) * 52ms);
+}
+@keyframes stagger-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Signature reveal: the profile is the emotional payoff ───── */
+.onboard-stage[data-step="profile"] {
+  --dur-stage: 560ms;
+}
+.onboard-profile {
+  position: relative;
+}
+.onboard-profile > * {
+  position: relative;
+  z-index: 1;
+}
+.onboard-bloom {
+  position: absolute;
+  z-index: 0;
+  top: -8%;
+  left: 18%;
+  width: 64%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--accent) 38%, transparent),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .onboard-bloom {
+    animation: bloom 1100ms var(--ease-glide) both;
+  }
+  @keyframes bloom {
+    0% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    45% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+  }
+}
+
+/* ── Welcome mark: a slow, living breath ─────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .onboard-mark {
+    animation: mark-breathe 6s ease-in-out infinite;
+  }
+  @keyframes mark-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: var(--shadow-2);
+    }
+    50% {
+      transform: scale(1.045);
+      box-shadow: var(--shadow-2),
+        0 0 32px color-mix(in oklch, var(--accent) 35%, transparent);
+    }
+  }
 }
 
 .onboard-welcome {
@@ -70,6 +229,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
+}
+
+.onboard-loop {
+  padding-top: var(--s-3);
+  align-items: stretch;
+}
+.onboard-loop-foot {
+  text-align: center;
+  text-wrap: pretty;
 }
 
 .onboard-safety-lead {
