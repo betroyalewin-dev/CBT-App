@@ -4,7 +4,7 @@ import { useStore, newId } from "../store/store";
 import { Likert } from "../components/Likert";
 import { MoodGrid } from "../components/MoodGrid";
 import { PMSlider } from "../components/PMSlider";
-import { BALoopDiagram } from "../components/BALoopDiagram";
+import { StepsDiagram } from "../components/StepsDiagram";
 import { LoopDiagram } from "../components/LoopDiagram";
 import { SafetyScreen } from "./SafetyScreen";
 import { PHQ9_ITEMS, PHQ9_OPTIONS, scorePHQ9 } from "../domain/phq9";
@@ -268,7 +268,7 @@ export function Onboarding() {
             <header className="onboard-step-head">
               <h1>Behavioral Activation turns it around</h1>
             </header>
-            <BALoopDiagram />
+            <StepsDiagram />
             <p>
               Instead of waiting to feel better before you do things, you do one
               small thing first — and let a little reward nudge your mood up,
