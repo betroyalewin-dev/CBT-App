@@ -157,56 +157,23 @@
   }
 }
 
-/* ── Welcome mark: a slow, living breath ─────────────────────── */
-@media (prefers-reduced-motion: no-preference) {
-  .onboard-mark {
-    animation: mark-breathe 6s ease-in-out infinite;
-  }
-  @keyframes mark-breathe {
-    0%,
-    100% {
-      transform: scale(1);
-      box-shadow: var(--shadow-2);
-    }
-    50% {
-      transform: scale(1.045);
-      box-shadow: var(--shadow-2),
-        0 0 32px color-mix(in oklch, var(--accent) 35%, transparent);
-    }
-  }
+/* ── Explanation pages (the loop + how BA breaks it) ─────────── */
+.onboard-explain {
+  padding-top: var(--s-3);
+  gap: var(--s-5);
 }
-
-.onboard-welcome {
-  padding-top: var(--s-5);
+.onboard-explain p {
+  font-size: 1.02rem;
+  line-height: 1.6;
 }
-.onboard-mark {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  background: radial-gradient(circle at 32% 30%, var(--accent), var(--primary) 70%);
-  box-shadow: var(--shadow-2);
+.onboard-explain .onboard-step-head {
+  margin-bottom: calc(-1 * var(--s-1));
 }
-.onboard-welcome h1 {
-  font-size: clamp(1.9rem, 1.4rem + 2.5vw, 2.6rem);
-}
-.onboard-promises {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-}
-.onboard-promises li {
-  position: relative;
-  padding-left: 1.6rem;
-  color: var(--ink);
-}
-.onboard-promises li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--primary);
-  font-weight: 700;
+.onboard-trust {
+  font-size: 0.9rem;
+  margin-top: var(--s-1);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
 }
 
 .onboard-step-head h1 {
@@ -251,6 +218,7 @@
   line-height: 1.22;
   letter-spacing: -0.01em;
   text-wrap: balance;
+  margin-bottom: var(--s-5);
 }
 .likert-solo .likert-opts {
   gap: var(--s-3);
@@ -283,15 +251,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
-}
-
-.onboard-loop {
-  padding-top: var(--s-3);
-  align-items: stretch;
-}
-.onboard-loop-foot {
-  text-align: center;
-  text-wrap: pretty;
 }
 
 .onboard-safety-lead {

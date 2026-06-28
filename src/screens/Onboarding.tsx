@@ -5,6 +5,7 @@ import { Likert } from "../components/Likert";
 import { MoodGrid } from "../components/MoodGrid";
 import { PMSlider } from "../components/PMSlider";
 import { BALoopDiagram } from "../components/BALoopDiagram";
+import { LoopDiagram } from "../components/LoopDiagram";
 import { SafetyScreen } from "./SafetyScreen";
 import { PHQ9_ITEMS, PHQ9_OPTIONS, scorePHQ9 } from "../domain/phq9";
 import { AXIS_ITEMS, AXIS_OPTIONS, scoreAxisPlacement } from "../domain/axis";
@@ -235,48 +236,60 @@ export function Onboarding() {
         </div>
 
         <div className="onboard-stage" key={stageKey} data-dir={dir} data-step={step}>
+        {/* Page 1 — the feedback loop that keeps depression going */}
         {step === "welcome" && (
-          <section className="stack onboard-welcome">
-            <span className="onboard-mark" aria-hidden />
-            <h1>A companion, not a doctor.</h1>
-            <p>A calm place to notice how you feel and what helps.</p>
-            <ul className="onboard-promises onboard-stagger">
-              <li style={{ "--i": 0 } as React.CSSProperties}>
-                Your data stays on this device. We don't upload it.
-              </li>
-              <li style={{ "--i": 1 } as React.CSSProperties}>
-                No diagnoses, no judgments, no shame.
-              </li>
-              <li style={{ "--i": 2 } as React.CSSProperties}>
-                Support is always one tap away if you need it.
-              </li>
-            </ul>
-            <p className="muted">
-              We'll start with a short, standard check-in. It takes a few
-              minutes — go at your own pace.
+          <section className="stack onboard-explain">
+            <header className="onboard-step-head">
+              <h1>Depression runs on a loop</h1>
+            </header>
+            <LoopDiagram />
+            <p>
+              When your mood drops, it's natural to do less — you cancel,
+              withdraw, wait for energy that doesn't come. But doing less means
+              fewer of the small moments that would lift you, so your mood sinks
+              a little further, and the next thing feels even harder.
             </p>
-            <button className="btn btn--primary btn--block" onClick={() => go("loop")}>
-              Begin
+            <p className="muted">
+              That's the loop, and it's not a character flaw — it's how the
+              illness keeps itself going.
+            </p>
+            <button
+              className="btn btn--primary btn--block"
+              onClick={() => go("loop")}
+            >
+              So how do you break it?
             </button>
           </section>
         )}
 
+        {/* Page 2 — how Behavioral Activation works the loop in reverse */}
         {step === "loop" && (
-          <section className="stack onboard-loop">
+          <section className="stack onboard-explain">
             <header className="onboard-step-head">
-              <h1>The whole idea, in one picture</h1>
-              <p className="muted">No theory to read — just this:</p>
+              <h1>Behavioral Activation turns it around</h1>
             </header>
             <BALoopDiagram />
-            <p className="muted onboard-loop-foot">
-              That's Behavioral Activation. The app helps you find your small
-              things and notice what they do.
+            <p>
+              Instead of waiting to feel better before you do things, you do one
+              small thing first — and let a little reward nudge your mood up,
+              which makes the next thing a bit easier. That's how the loop runs
+              in reverse.
+            </p>
+            <p>
+              The catch: what actually feels rewarding is different for everyone.
+              A walk lifts one person and does nothing for the next. So this app
+              helps you find the activities that genuinely move <em>your</em>{" "}
+              mood — and shows you the improvement as it adds up.
+            </p>
+            <p className="muted onboard-trust">
+              Everything stays on your device. It's a companion, not a doctor,
+              and support is always one tap away.
             </p>
             <button
               className="btn btn--primary btn--block"
               onClick={() => go("phq9")}
             >
-              Got it
+              Start the check-in
             </button>
           </section>
         )}
