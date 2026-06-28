@@ -220,6 +220,60 @@
   margin-top: var(--s-3);
 }
 
+/* ── One-question-per-page (PHQ-9 + axis) ────────────────────── */
+.onboard-qpage {
+  gap: var(--s-5);
+  padding-top: var(--s-5);
+}
+.onboard-qhead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+.onboard-qsection {
+  font-weight: 600;
+  color: var(--primary-strong);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.onboard-qcontext {
+  font-size: 0.95rem;
+}
+
+.likert-solo .likert {
+  gap: var(--s-5);
+}
+.likert-solo .likert-prompt {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 1.15rem + 1.5vw, 1.9rem);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.likert-solo .likert-opts {
+  gap: var(--s-3);
+}
+.likert-solo .likert-opt {
+  min-height: 60px;
+  font-size: 1.05rem;
+  padding: 0 var(--s-5);
+  transition: background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+/* press feedback so the chosen answer registers before the page turns */
+.likert-solo .likert-opt:active {
+  transform: scale(0.985);
+}
+.likert-solo.is-locked {
+  pointer-events: none;
+}
+.likert-solo.is-locked .likert-opt.is-selected {
+  transform: scale(1.012);
+}
+
 .onboard-profile h1 {
   font-size: clamp(1.7rem, 1.3rem + 2vw, 2.3rem);
 }

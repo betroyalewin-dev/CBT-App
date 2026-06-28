@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore, newId } from "../store/store";
 import { Likert } from "../components/Likert";
@@ -60,6 +60,63 @@ export function Onboarding() {
 
   const [phq9, setPhq9] = useState<number[]>(Array(9).fill(-1));
   const [axis, setAxis] = useState<number[]>(Array(6).fill(-1));
+  // One-question-per-page cursors for the two screened sections.
+  const [phq9Index, setPhq9Index] = useState(0);
+  const [axisIndex, setAxisIndex] = useState(0);
+  // Brief lock while a chosen answer settles before the page turns.
+  const [locked, setLocked] = useState(false);
+  const advanceTimer = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (advanceTimer.current) window.clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
+
+  /** Record an answer, let it register, then turn to the next question/section. */
+  function answerQuestion(section: "phq9" | "axis", value: number) {
+    if (locked) return;
+    setLocked(true);
+    const isPhq = section === "phq9";
+    const items = isPhq ? PHQ9_ITEMS : AXIS_ITEMS;
+    const index = isPhq ? phq9Index : axisIndex;
+    const next = (isPhq ? phq9 : axis).map((x, j) => (j === index ? value : x));
+    if (isPhq) setPhq9(next);
+    else setAxis(next);
+
+    advanceTimer.current = window.setTimeout(() => {
+      setLocked(false);
+      setDir("fwd");
+      if (index < items.length - 1) {
+        if (isPhq) setPhq9Index(index + 1);
+        else setAxisIndex(index + 1);
+      } else if (isPhq) {
+        go(scorePHQ9(next).safetyFlag ? "safety" : "axis");
+      } else {
+        go("profile");
+      }
+    }, 240);
+  }
+
+  /** Back that steps through questions first, then out to the prior section. */
+  function goBack() {
+    if (locked) return;
+    if (step === "phq9" && phq9Index > 0) {
+      setDir("back");
+      setPhq9Index(phq9Index - 1);
+    } else if (step === "axis" && axisIndex > 0) {
+      setDir("back");
+      setAxisIndex(axisIndex - 1);
+    } else {
+      back();
+    }
+  }
+
+  const canGoBack =
+    history.length > 0 ||
+    (step === "phq9" && phq9Index > 0) ||
+    (step === "axis" && axisIndex > 0);
   const [values, setValues] = useState<string[]>([]);
   const [activities, setActivities] = useState<string[]>([]);
   const [firstMood, setFirstMood] = useState<MoodPoint | null>(null);
@@ -112,19 +169,35 @@ export function Onboarding() {
     navigate("/today");
   }
 
-  const stepsOrder: Step[] = [
-    "welcome",
-    "loop",
-    "phq9",
-    "axis",
-    "profile",
-    "values",
-    "activities",
-    "firstlog",
-  ];
-  const progressIndex = Math.max(0, stepsOrder.indexOf(step));
+  // Granular progress: each PHQ-9 / axis question is its own atom, so the bar
+  // ticks forward with every page, not just every section.
+  const PHQ9_N = PHQ9_ITEMS.length;
+  const AXIS_N = AXIS_ITEMS.length;
+  const atomBase: Record<Exclude<Step, "safety">, number> = {
+    welcome: 0,
+    loop: 1,
+    phq9: 2,
+    axis: 2 + PHQ9_N,
+    profile: 2 + PHQ9_N + AXIS_N,
+    values: 3 + PHQ9_N + AXIS_N,
+    activities: 4 + PHQ9_N + AXIS_N,
+    firstlog: 5 + PHQ9_N + AXIS_N,
+  };
+  const totalAtoms = 6 + PHQ9_N + AXIS_N; // last atom index = totalAtoms − 1
+  const currentAtom =
+    step === "safety"
+      ? null
+      : atomBase[step] +
+        (step === "phq9" ? phq9Index : step === "axis" ? axisIndex : 0);
   const progress =
-    step === "safety" ? null : (progressIndex / (stepsOrder.length - 1)) * 100;
+    currentAtom === null ? null : (currentAtom / (totalAtoms - 1)) * 100;
+
+  const stageKey =
+    step === "phq9"
+      ? `phq9-${phq9Index}`
+      : step === "axis"
+        ? `axis-${axisIndex}`
+        : step;
 
   return (
     <div className="app-frame">
@@ -132,10 +205,10 @@ export function Onboarding() {
         <div className="onboard-topbar">
           <button
             type="button"
-            className={`onboard-back ${history.length ? "" : "is-hidden"}`}
-            onClick={back}
+            className={`onboard-back ${canGoBack ? "" : "is-hidden"}`}
+            onClick={goBack}
             aria-label="Go back"
-            tabIndex={history.length ? 0 : -1}
+            tabIndex={canGoBack ? 0 : -1}
           >
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
               <path
@@ -161,7 +234,7 @@ export function Onboarding() {
           )}
         </div>
 
-        <div className="onboard-stage" key={step} data-dir={dir} data-step={step}>
+        <div className="onboard-stage" key={stageKey} data-dir={dir} data-step={step}>
         {step === "welcome" && (
           <section className="stack onboard-welcome">
             <span className="onboard-mark" aria-hidden />
@@ -209,30 +282,17 @@ export function Onboarding() {
         )}
 
         {step === "phq9" && (
-          <StepWrap
-            title="Over the last 2 weeks…"
-            subtitle="How often have you been bothered by the following? (PHQ-9, a standard screen)"
-          >
-            <div className="stack onboard-items onboard-stagger">
-              {PHQ9_ITEMS.map((prompt, i) => (
-                <div key={i} style={{ "--i": i } as React.CSSProperties}>
-                  <Likert
-                    prompt={`${i + 1}. ${prompt}`}
-                    options={PHQ9_OPTIONS}
-                    value={phq9[i] >= 0 ? phq9[i] : null}
-                    sensitive={i === 8}
-                    onChange={(v) =>
-                      setPhq9((prev) => prev.map((x, j) => (j === i ? v : x)))
-                    }
-                  />
-                </div>
-              ))}
-            </div>
-            <NextButton
-              disabled={!phq9Result}
-              onClick={() => go(phq9Result?.safetyFlag ? "safety" : "axis")}
-            />
-          </StepWrap>
+          <QuestionPage
+            sectionLabel="The check-in"
+            stepText={`${phq9Index + 1} of ${PHQ9_ITEMS.length}`}
+            context="Over the last 2 weeks, how often have you been bothered by…"
+            prompt={PHQ9_ITEMS[phq9Index]}
+            options={PHQ9_OPTIONS}
+            value={phq9[phq9Index] >= 0 ? phq9[phq9Index] : null}
+            sensitive={phq9Index === 8}
+            locked={locked}
+            onChange={(v) => answerQuestion("phq9", v)}
+          />
         )}
 
         {step === "safety" && (
@@ -255,26 +315,16 @@ export function Onboarding() {
         )}
 
         {step === "axis" && (
-          <StepWrap
-            title="Two more sets of feelings"
-            subtitle="This places you on the two dimensions the app tracks — reward and load. There are no right answers."
-          >
-            <div className="stack onboard-items onboard-stagger">
-              {AXIS_ITEMS.map((item, i) => (
-                <div key={i} style={{ "--i": i } as React.CSSProperties}>
-                  <Likert
-                    prompt={item.prompt}
-                    options={AXIS_OPTIONS}
-                    value={axis[i] >= 0 ? axis[i] : null}
-                    onChange={(v) =>
-                      setAxis((prev) => prev.map((x, j) => (j === i ? v : x)))
-                    }
-                  />
-                </div>
-              ))}
-            </div>
-            <NextButton disabled={!axisScores} onClick={() => go("profile")} />
-          </StepWrap>
+          <QuestionPage
+            sectionLabel="Your picture"
+            stepText={`${axisIndex + 1} of ${AXIS_ITEMS.length}`}
+            context="There are no right answers — just go with your gut."
+            prompt={AXIS_ITEMS[axisIndex].prompt}
+            options={AXIS_OPTIONS}
+            value={axis[axisIndex] >= 0 ? axis[axisIndex] : null}
+            locked={locked}
+            onChange={(v) => answerQuestion("axis", v)}
+          />
         )}
 
         {step === "profile" && profileKey && (
@@ -424,6 +474,48 @@ function StepWrap({
         <p className="muted">{subtitle}</p>
       </header>
       {children}
+    </section>
+  );
+}
+
+function QuestionPage({
+  sectionLabel,
+  stepText,
+  context,
+  prompt,
+  options,
+  value,
+  sensitive,
+  locked,
+  onChange,
+}: {
+  sectionLabel: string;
+  stepText: string;
+  context: string;
+  prompt: string;
+  options: { value: number; label: string }[];
+  value: number | null;
+  sensitive?: boolean;
+  locked: boolean;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <section className="stack onboard-qpage">
+      <header className="onboard-qhead">
+        <span className="eyebrow onboard-qsection">
+          {sectionLabel} · {stepText}
+        </span>
+        <p className="muted onboard-qcontext">{context}</p>
+      </header>
+      <div className={`likert-solo ${locked ? "is-locked" : ""}`}>
+        <Likert
+          prompt={prompt}
+          options={options}
+          value={value}
+          sensitive={sensitive}
+          onChange={onChange}
+        />
+      </div>
     </section>
   );
 }
