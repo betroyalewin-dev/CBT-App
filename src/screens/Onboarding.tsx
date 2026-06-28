@@ -21,8 +21,16 @@ type Step =
   | "axis"
   | "profile"
   | "values"
-  | "activities"
+  | "seed"
   | "firstlog";
+
+/** A few gentle, non-shaming starters for the "drains you" bucket. */
+const DRAINING_SUGGESTIONS = [
+  "Scrolling my phone",
+  "Chores / admin",
+  "Staying in bed",
+  "Bad news",
+];
 
 const VALUES: { tag: string; activities: string[] }[] = [
   { tag: "Relationships", activities: ["Message a friend", "Time with family"] },
@@ -119,7 +127,9 @@ export function Onboarding() {
     (step === "phq9" && phq9Index > 0) ||
     (step === "axis" && axisIndex > 0);
   const [values, setValues] = useState<string[]>([]);
-  const [activities, setActivities] = useState<string[]>([]);
+  // Seed activities, elicited as "what lifts you" vs "what drains you".
+  const [liked, setLiked] = useState<string[]>([]);
+  const [disliked, setDisliked] = useState<string[]>([]);
   const [firstMood, setFirstMood] = useState<MoodPoint | null>(null);
   const [firstP, setFirstP] = useState(5);
   const [firstM, setFirstM] = useState(5);
@@ -142,6 +152,13 @@ export function Onboarding() {
     return [...set];
   }, [values]);
 
+  // Both buckets become trackable activities — the app discovers from real logs
+  // whether each one actually lifts or drains; the buckets are just the prompt.
+  const seededActivities = useMemo(
+    () => [...new Set([...liked, ...disliked])],
+    [liked, disliked],
+  );
+
   function finish() {
     if (!phq9Result || !axisScores || !profileKey || !firstMood) return;
     dispatch({
@@ -151,7 +168,7 @@ export function Onboarding() {
         axis: axisScores,
         profile: profileKey,
         values,
-        activities: activities.length ? activities : suggestedActivities,
+        activities: seededActivities.length ? seededActivities : suggestedActivities,
         anxiousFlag: axisScores.stress >= 66,
       },
     });
@@ -181,7 +198,7 @@ export function Onboarding() {
     axis: 2 + PHQ9_N,
     profile: 2 + PHQ9_N + AXIS_N,
     values: 3 + PHQ9_N + AXIS_N,
-    activities: 4 + PHQ9_N + AXIS_N,
+    seed: 4 + PHQ9_N + AXIS_N,
     firstlog: 5 + PHQ9_N + AXIS_N,
   };
   const totalAtoms = 6 + PHQ9_N + AXIS_N; // last atom index = totalAtoms − 1
@@ -394,42 +411,49 @@ export function Onboarding() {
             <NextButton
               disabled={values.length === 0}
               label={values.length ? "Next" : "Pick at least one"}
-              onClick={() => {
-                setActivities(suggestedActivities);
-                go("activities");
-              }}
+              onClick={() => go("seed")}
             />
           </StepWrap>
         )}
 
-        {step === "activities" && (
+        {step === "seed" && (
           <StepWrap
-            title="Pick 1–3 to track"
-            subtitle="Pre-filled from what you value. You can change these anytime."
+            title="What lifts you, and what drains you?"
+            subtitle="Add a few of each. These become your starting list to log — and over time, your data shows which ones really do what."
           >
-            <div className="chiprow onboard-stagger">
-              {suggestedActivities.map((a, i) => {
-                const on = activities.includes(a);
-                return (
-                  <button
-                    key={a}
-                    style={{ "--i": i } as React.CSSProperties}
-                    className={`pill ${on ? "is-selected" : ""}`}
-                    aria-pressed={on}
-                    onClick={() =>
-                      setActivities((prev) =>
-                        on ? prev.filter((x) => x !== a) : [...prev, a],
-                      )
-                    }
-                  >
-                    {a}
-                  </button>
-                );
-              })}
-            </div>
+            <SeedBucket
+              tone="lift"
+              label="Tends to lift me"
+              hint="things you usually feel better during or after"
+              items={liked}
+              suggestions={suggestedActivities.filter(
+                (s) => !liked.includes(s),
+              )}
+              onAdd={(v) =>
+                setLiked((p) => (p.includes(v) ? p : [...p, v]))
+              }
+              onRemove={(v) => setLiked((p) => p.filter((x) => x !== v))}
+            />
+            <SeedBucket
+              tone="drain"
+              label="Tends to drain me"
+              hint="things that usually leave you worse — worth watching, not avoiding"
+              items={disliked}
+              suggestions={DRAINING_SUGGESTIONS.filter(
+                (s) => !disliked.includes(s),
+              )}
+              onAdd={(v) =>
+                setDisliked((p) => (p.includes(v) ? p : [...p, v]))
+              }
+              onRemove={(v) => setDisliked((p) => p.filter((x) => x !== v))}
+            />
             <NextButton
-              disabled={activities.length === 0}
-              label={activities.length ? "Next" : "Pick at least one"}
+              disabled={liked.length + disliked.length === 0}
+              label={
+                liked.length + disliked.length === 0
+                  ? "Add at least one"
+                  : "Next"
+              }
               onClick={() => go("firstlog")}
             />
           </StepWrap>
@@ -487,6 +511,100 @@ function StepWrap({
         <p className="muted">{subtitle}</p>
       </header>
       {children}
+    </section>
+  );
+}
+
+function SeedBucket({
+  tone,
+  label,
+  hint,
+  items,
+  suggestions,
+  onAdd,
+  onRemove,
+}: {
+  tone: "lift" | "drain";
+  label: string;
+  hint: string;
+  items: string[];
+  suggestions: string[];
+  onAdd: (v: string) => void;
+  onRemove: (v: string) => void;
+}) {
+  const [draft, setDraft] = useState("");
+  function commit() {
+    const v = draft.trim();
+    if (!v) return;
+    onAdd(v);
+    setDraft("");
+  }
+  return (
+    <section className={`seed-bucket seed-bucket--${tone}`}>
+      <header className="seed-bucket-head">
+        <span className="seed-bucket-label">{label}</span>
+        <span className="muted seed-bucket-hint">{hint}</span>
+      </header>
+
+      {items.length > 0 && (
+        <div className="chiprow">
+          {items.map((it) => (
+            <button
+              key={it}
+              type="button"
+              className="pill is-selected seed-chip"
+              onClick={() => onRemove(it)}
+              aria-label={`Remove ${it}`}
+            >
+              {it}
+              <span className="seed-chip-x" aria-hidden>
+                ×
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="seed-add">
+        <input
+          className="seed-input"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              commit();
+            }
+          }}
+          placeholder={
+            tone === "lift" ? "add something that helps…" : "add something draining…"
+          }
+          aria-label={`Add to ${label}`}
+        />
+        <button
+          type="button"
+          className="btn btn--ghost seed-add-btn"
+          onClick={commit}
+          disabled={!draft.trim()}
+        >
+          Add
+        </button>
+      </div>
+
+      {suggestions.length > 0 && (
+        <div className="chiprow seed-suggestions">
+          {suggestions.map((s) => (
+            <button
+              key={s}
+              type="button"
+              className="pill seed-suggest"
+              onClick={() => onAdd(s)}
+            >
+              + {s}
+            </button>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

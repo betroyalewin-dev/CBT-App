@@ -253,6 +253,69 @@
   gap: var(--s-2);
 }
 
+/* ── Seed activities: what lifts you / what drains you ───────── */
+.seed-bucket {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.seed-bucket--drain {
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+.seed-bucket-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.seed-bucket-label {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.seed-bucket-hint {
+  font-size: 0.9rem;
+}
+
+.seed-add {
+  display: flex;
+  gap: var(--s-2);
+}
+.seed-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  padding: 0 var(--s-3);
+}
+.seed-input::placeholder {
+  color: var(--ink-muted);
+}
+.seed-add-btn {
+  flex: none;
+  min-height: 48px;
+}
+
+.seed-chip {
+  gap: var(--s-2);
+}
+.seed-chip-x {
+  font-size: 1.15rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+/* the "drains you" picks read in a cooler, distinct tone from the lifts */
+.seed-bucket--drain .seed-chip.is-selected {
+  background: var(--q-numb-wash);
+  border-color: var(--q-numb);
+  color: color-mix(in oklch, var(--q-numb) 70%, var(--ink));
+}
+.seed-suggest {
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
 .onboard-safety-lead {
   background: var(--safety-wash);
   border: 1px solid color-mix(in oklch, var(--safety) 35%, var(--line));
