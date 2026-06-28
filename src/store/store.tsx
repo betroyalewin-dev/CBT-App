@@ -14,6 +14,15 @@ import type {
   ProfileKey,
   SafetyPlan,
 } from "../domain/types";
+import type { Experiment } from "../domain/experiments";
+import {
+  awardForLog,
+  awardForPhq9,
+  levelFromXp,
+  sumAward,
+  XP,
+  type AwardItem,
+} from "../domain/xp";
 
 const STORAGE_KEY = "cbt-companion:v1";
 
@@ -34,6 +43,9 @@ const initialState: AppState = {
   logs: [],
   safetyPlan: emptySafetyPlan,
   anxiousFlag: false,
+  xp: 0,
+  experiments: [],
+  lastAward: null,
 };
 
 type Action =
@@ -53,7 +65,30 @@ type Action =
   | { type: "addActivity"; label: string }
   | { type: "recordPHQ9"; result: PHQ9Result }
   | { type: "saveSafetyPlan"; plan: SafetyPlan }
+  | { type: "addExperiment"; experiment: Experiment }
+  | { type: "claimExperiment"; id: string; reason: string }
+  | { type: "clearAward" }
   | { type: "reset" };
+
+/** Apply an XP award, bumping the total and stashing the transient animation payload. */
+function applyAward(state: AppState, items: AwardItem[]): AppState {
+  if (items.length === 0) return state;
+  const before = levelFromXp(state.xp).level;
+  const total = sumAward(items);
+  const xp = state.xp + total;
+  const after = levelFromXp(xp).level;
+  return {
+    ...state,
+    xp,
+    lastAward: {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      at: Date.now(),
+      items,
+      total,
+      levelUp: after > before ? after : undefined,
+    },
+  };
+}
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -71,13 +106,40 @@ function reducer(state: AppState, action: Action): AppState {
         anxiousFlag: action.payload.anxiousFlag,
       };
     case "addLog":
-      return { ...state, logs: [...state.logs, action.log] };
+      return applyAward(
+        { ...state, logs: [...state.logs, action.log] },
+        awardForLog(action.log.planned),
+      );
     case "addActivity":
       return state.activities.includes(action.label)
         ? state
         : { ...state, activities: [...state.activities, action.label] };
     case "recordPHQ9":
-      return { ...state, phq9History: [...state.phq9History, action.result] };
+      return applyAward(
+        {
+          ...state,
+          phq9History: [...state.phq9History, action.result],
+        },
+        awardForPhq9(state.phq9History[state.phq9History.length - 1], action.result),
+      );
+    case "addExperiment":
+      return { ...state, experiments: [...state.experiments, action.experiment] };
+    case "claimExperiment": {
+      let changed = false;
+      const experiments = state.experiments.map((e) => {
+        if (e.id === action.id && !e.claimedAt) {
+          changed = true;
+          return { ...e, claimedAt: Date.now() };
+        }
+        return e;
+      });
+      if (!changed) return state;
+      return applyAward({ ...state, experiments }, [
+        { amount: XP.experiment, reason: action.reason },
+      ]);
+    }
+    case "clearAward":
+      return state.lastAward ? { ...state, lastAward: null } : state;
     case "saveSafetyPlan":
       return {
         ...state,
@@ -95,7 +157,13 @@ function load(): AppState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return initialState;
     const parsed = JSON.parse(raw) as Partial<AppState>;
-    return { ...initialState, ...parsed, safetyPlan: { ...emptySafetyPlan, ...parsed.safetyPlan } };
+    return {
+      ...initialState,
+      ...parsed,
+      safetyPlan: { ...emptySafetyPlan, ...parsed.safetyPlan },
+      // transient — never restore a stale reward toast on reload
+      lastAward: null,
+    };
   } catch {
     return initialState;
   }

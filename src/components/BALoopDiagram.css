@@ -1,0 +1,122 @@
+.ba-loop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+}
+.ba-loop svg {
+  max-width: 260px;
+}
+
+/* ── The downward spiral (cool) ─────────────────────────────── */
+.ba-spiral {
+  stroke: var(--q-numb);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  opacity: 0.85;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: ba-draw 1700ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+}
+
+/* a marker stuck circling the loop */
+.ba-orbit {
+  transform-box: view-box;
+  transform-origin: 120px 104px;
+  animation: ba-spin 7s linear infinite;
+}
+.ba-orbit-dot {
+  fill: var(--q-numb);
+  opacity: 0.7;
+}
+
+/* ── The way out (warm) ─────────────────────────────────────── */
+.ba-open,
+.ba-open-head {
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: ba-draw 900ms cubic-bezier(0.16, 1, 0.3, 1) 1700ms forwards;
+}
+
+.ba-seed {
+  fill: var(--accent);
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: ba-pop 600ms cubic-bezier(0.16, 1, 0.3, 1) 1600ms forwards;
+}
+
+@keyframes ba-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes ba-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ba-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* a slow living glow on the seed once it's arrived */
+@media (prefers-reduced-motion: no-preference) {
+  .ba-seed {
+    animation:
+      ba-pop 600ms cubic-bezier(0.16, 1, 0.3, 1) 1600ms forwards,
+      ba-seed-glow 3.4s ease-in-out 2400ms infinite;
+  }
+  @keyframes ba-seed-glow {
+    0%,
+    100% {
+      filter: none;
+    }
+    50% {
+      filter: drop-shadow(0 0 6px color-mix(in oklch, var(--accent) 60%, transparent));
+    }
+  }
+}
+
+/* ── Caption ─────────────────────────────────────────────────── */
+.ba-caption {
+  text-align: center;
+  text-wrap: balance;
+  max-width: 30ch;
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+.ba-caption-cool {
+  color: var(--ink-muted);
+}
+.ba-caption-warm {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ba-spiral,
+  .ba-open,
+  .ba-open-head {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+  .ba-seed {
+    opacity: 1;
+    animation: none;
+  }
+  .ba-orbit {
+    animation: none;
+  }
+}

@@ -1,0 +1,52 @@
+.growth {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+}
+
+.growth-ring {
+  position: relative;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+}
+.growth-ring svg {
+  transform: rotate(-90deg);
+}
+.growth-ring-track {
+  fill: none;
+  stroke: var(--surface-2);
+  stroke-width: 6;
+}
+.growth-ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dasharray 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.growth-ring-num {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.growth-body {
+  min-width: 0;
+}
+.growth-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.growth-meta {
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}

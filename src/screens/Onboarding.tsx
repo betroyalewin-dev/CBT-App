@@ -4,6 +4,7 @@ import { useStore, newId } from "../store/store";
 import { Likert } from "../components/Likert";
 import { MoodGrid } from "../components/MoodGrid";
 import { PMSlider } from "../components/PMSlider";
+import { BALoopDiagram } from "../components/BALoopDiagram";
 import { SafetyScreen } from "./SafetyScreen";
 import { PHQ9_ITEMS, PHQ9_OPTIONS, scorePHQ9 } from "../domain/phq9";
 import { AXIS_ITEMS, AXIS_OPTIONS, scoreAxisPlacement } from "../domain/axis";
@@ -13,6 +14,7 @@ import "./Onboarding.css";
 
 type Step =
   | "welcome"
+  | "loop"
   | "phq9"
   | "safety"
   | "axis"
@@ -112,6 +114,7 @@ export function Onboarding() {
 
   const stepsOrder: Step[] = [
     "welcome",
+    "loop",
     "phq9",
     "axis",
     "profile",
@@ -163,11 +166,7 @@ export function Onboarding() {
           <section className="stack onboard-welcome">
             <span className="onboard-mark" aria-hidden />
             <h1>A companion, not a doctor.</h1>
-            <p>
-              This is a calm place to notice how you feel and what helps —
-              built on Behavioral Activation, the most evidence-based behavioral
-              approach for depression.
-            </p>
+            <p>A calm place to notice how you feel and what helps.</p>
             <ul className="onboard-promises onboard-stagger">
               <li style={{ "--i": 0 } as React.CSSProperties}>
                 Your data stays on this device. We don't upload it.
@@ -183,8 +182,28 @@ export function Onboarding() {
               We'll start with a short, standard check-in. It takes a few
               minutes — go at your own pace.
             </p>
-            <button className="btn btn--primary btn--block" onClick={() => go("phq9")}>
+            <button className="btn btn--primary btn--block" onClick={() => go("loop")}>
               Begin
+            </button>
+          </section>
+        )}
+
+        {step === "loop" && (
+          <section className="stack onboard-loop">
+            <header className="onboard-step-head">
+              <h1>The whole idea, in one picture</h1>
+              <p className="muted">No theory to read — just this:</p>
+            </header>
+            <BALoopDiagram />
+            <p className="muted onboard-loop-foot">
+              That's Behavioral Activation. The app helps you find your small
+              things and notice what they do.
+            </p>
+            <button
+              className="btn btn--primary btn--block"
+              onClick={() => go("phq9")}
+            >
+              Got it
             </button>
           </section>
         )}

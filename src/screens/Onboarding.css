@@ -231,6 +231,15 @@
   gap: var(--s-2);
 }
 
+.onboard-loop {
+  padding-top: var(--s-3);
+  align-items: stretch;
+}
+.onboard-loop-foot {
+  text-align: center;
+  text-wrap: pretty;
+}
+
 .onboard-safety-lead {
   background: var(--safety-wash);
   border: 1px solid color-mix(in oklch, var(--safety) 35%, var(--line));

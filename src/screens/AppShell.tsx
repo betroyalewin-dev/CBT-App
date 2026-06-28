@@ -1,5 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { TabBar } from "../components/TabBar";
+import { XpReward } from "../components/XpReward";
 import "./AppShell.css";
 
 export function AppShell() {
@@ -22,6 +23,7 @@ export function AppShell() {
       <main className="app-main">
         <Outlet />
       </main>
+      <XpReward />
       <TabBar />
     </div>
   );

@@ -1,6 +1,9 @@
 // Core domain types for the BA (Behavioral Activation) model.
 // Mood is a circumplex point: valence (pleasant↔unpleasant) × arousal (calm↔activated).
 
+import type { Experiment } from "./experiments";
+import type { XpAward } from "./xp";
+
 /** A point on the valence×arousal circumplex. Both axes are −5…+5. */
 export interface MoodPoint {
   valence: number; // −5 (unpleasant) … +5 (pleasant)
@@ -83,4 +86,10 @@ export interface AppState {
   logs: ActivityLog[];
   safetyPlan: SafetyPlan;
   anxiousFlag: boolean;
+  /** Growth points — monotonic, never lost (see domain/xp.ts). */
+  xp: number;
+  /** Active and completed n-of-1 experiments (see domain/experiments.ts). */
+  experiments: Experiment[];
+  /** Transient: the most recent XP award, for the reward animation. Not persisted. */
+  lastAward?: XpAward | null;
 }
