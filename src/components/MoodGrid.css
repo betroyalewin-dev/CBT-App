@@ -3,12 +3,53 @@
   flex-direction: column;
   gap: var(--s-3);
   align-items: center;
+  width: 100%;
 }
+
+/* ── Layout: y-rail | pad-col ────────────────────────────────── */
+
+.mg-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--s-2);
+  width: 100%;
+  max-width: 24rem;
+}
+
+/* Y-axis label strip (left of pad) */
+.mg-y-rail {
+  flex-shrink: 0;
+  width: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  /* pad-bottom matches x-rail height + gap so labels span the pad only */
+  padding-bottom: 1.5rem;
+}
+
+.mg-y-rail .mg-axis-endpoint,
+.mg-y-rail .mg-axis-name {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+/* Pad + X-axis stacked */
+.mg-pad-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  min-width: 0;
+}
+
+/* ── The interactive pad ─────────────────────────────────────── */
 
 .moodgrid {
   position: relative;
   width: 100%;
-  max-width: 22rem;
   aspect-ratio: 1;
   border-radius: var(--r-card);
   border: 1px solid var(--line);
@@ -19,36 +60,22 @@
   box-shadow: var(--shadow-1);
 }
 
+/* Quadrant tints */
 .mg-q {
   position: absolute;
   width: 50%;
   height: 50%;
 }
-/* tl: unpleasant + activated → agitated (flat-rose family) */
-.mg-q--tl {
-  top: 0;
-  left: 0;
-  background: var(--q-flat-wash);
-}
-/* tr: pleasant + activated → excited (stressed-amber family) */
-.mg-q--tr {
-  top: 0;
-  right: 0;
-  background: var(--q-stressed-wash);
-}
-/* bl: unpleasant + calm → numb/flat (numb-slate family) */
-.mg-q--bl {
-  bottom: 0;
-  left: 0;
-  background: var(--q-numb-wash);
-}
-/* br: pleasant + calm → calm/content (thriving-green family) */
-.mg-q--br {
-  bottom: 0;
-  right: 0;
-  background: var(--q-thriving-wash);
-}
+/* tl: unpleasant + high energy → agitated */
+.mg-q--tl { top: 0; left: 0; background: var(--q-flat-wash); }
+/* tr: pleasant + high energy → excited */
+.mg-q--tr { top: 0; right: 0; background: var(--q-stressed-wash); }
+/* bl: unpleasant + calm → numb */
+.mg-q--bl { bottom: 0; left: 0; background: var(--q-numb-wash); }
+/* br: pleasant + calm → content */
+.mg-q--br { bottom: 0; right: 0; background: var(--q-thriving-wash); }
 
+/* Crosshair lines */
 .mg-axis {
   position: absolute;
   background: var(--line);
@@ -66,65 +93,7 @@
   height: 1px;
 }
 
-.mg-label {
-  position: absolute;
-  font-size: 0.72rem;
-  color: var(--ink-muted);
-  font-weight: 600;
-  padding: var(--s-2);
-  pointer-events: none;
-  max-width: 45%;
-}
-.mg-label--tl {
-  top: 0;
-  left: 0;
-}
-.mg-label--tr {
-  top: 0;
-  right: 0;
-  text-align: right;
-}
-.mg-label--bl {
-  bottom: 0;
-  left: 0;
-}
-.mg-label--br {
-  bottom: 0;
-  right: 0;
-  text-align: right;
-}
-
-.mg-edge {
-  position: absolute;
-  font-size: 0.62rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-  opacity: 0.7;
-  pointer-events: none;
-}
-.mg-edge--top {
-  top: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.mg-edge--bottom {
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.mg-edge--left {
-  left: 4px;
-  top: 50%;
-  transform: translateY(-50%) rotate(-90deg);
-  transform-origin: left center;
-}
-.mg-edge--right {
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%) rotate(90deg);
-  transform-origin: right center;
-}
+/* ── Dot ─────────────────────────────────────────────────────── */
 
 .mg-dot {
   position: absolute;
@@ -145,6 +114,12 @@
   box-shadow: none;
 }
 
+/* dragging shouldn't animate the dot (1:1 with finger) */
+.moodgrid:active .mg-dot {
+  transition: none;
+}
+
+/* Empty-state hint */
 .mg-hint {
   position: absolute;
   left: 50%;
@@ -159,15 +134,34 @@
   pointer-events: none;
 }
 
+/* ── Axis label rails ────────────────────────────────────────── */
+
+.mg-x-rail {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mg-axis-endpoint {
+  font-size: 0.6rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.01em;
+}
+
+.mg-axis-name {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  letter-spacing: 0.03em;
+}
+
+/* ── Readout ─────────────────────────────────────────────────── */
+
 .mg-readout {
   font-size: 0.95rem;
   color: var(--ink);
 }
 .mg-readout strong {
   font-family: var(--font-display);
-}
-
-/* dragging shouldn't animate the dot (1:1 with finger) */
-.moodgrid:active .mg-dot {
-  transition: none;
 }

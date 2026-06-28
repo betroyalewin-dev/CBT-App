@@ -59,63 +59,71 @@ export function MoodGrid({ value, onChange, ghost }: Props) {
 
   return (
     <div className="moodgrid-wrap">
-      <div
-        ref={ref}
-        className="moodgrid"
-        role="slider"
-        tabIndex={0}
-        aria-label="Mood pad: left–right is unpleasant to pleasant, up–down is calm to activated"
-        aria-valuetext={
-          value
-            ? `${region?.label}, valence ${value.valence}, energy ${value.arousal}`
-            : "not set — tap to place your mood"
-        }
-        onKeyDown={onKeyDown}
-        onPointerDown={(e) => {
-          (e.target as HTMLElement).setPointerCapture(e.pointerId);
-          setDragging(true);
-          place(e.clientX, e.clientY);
-        }}
-        onPointerMove={(e) => dragging && place(e.clientX, e.clientY)}
-        onPointerUp={() => setDragging(false)}
-        onPointerCancel={() => setDragging(false)}
-      >
-        {/* quadrant tints */}
-        <span className="mg-q mg-q--tl" aria-hidden />
-        <span className="mg-q mg-q--tr" aria-hidden />
-        <span className="mg-q mg-q--bl" aria-hidden />
-        <span className="mg-q mg-q--br" aria-hidden />
+      <div className="mg-layout">
+        {/* Y-axis rail — energy level, reads bottom→top */}
+        <div className="mg-y-rail" aria-hidden>
+          <span className="mg-axis-endpoint">energised</span>
+          <span className="mg-axis-name">Energy</span>
+          <span className="mg-axis-endpoint">calm</span>
+        </div>
 
-        <span className="mg-axis mg-axis--v" aria-hidden />
-        <span className="mg-axis mg-axis--h" aria-hidden />
+        <div className="mg-pad-col">
+          <div
+            ref={ref}
+            className="moodgrid"
+            role="slider"
+            tabIndex={0}
+            aria-label="Mood pad: left–right is how you feel (unpleasant to pleasant), up–down is energy level (calm to energised)"
+            aria-valuetext={
+              value
+                ? `${region?.label}, valence ${value.valence}, energy ${value.arousal}`
+                : "not set — tap to place your mood"
+            }
+            onKeyDown={onKeyDown}
+            onPointerDown={(e) => {
+              (e.target as HTMLElement).setPointerCapture(e.pointerId);
+              setDragging(true);
+              place(e.clientX, e.clientY);
+            }}
+            onPointerMove={(e) => dragging && place(e.clientX, e.clientY)}
+            onPointerUp={() => setDragging(false)}
+            onPointerCancel={() => setDragging(false)}
+          >
+            {/* quadrant tints */}
+            <span className="mg-q mg-q--tl" aria-hidden />
+            <span className="mg-q mg-q--tr" aria-hidden />
+            <span className="mg-q mg-q--bl" aria-hidden />
+            <span className="mg-q mg-q--br" aria-hidden />
 
-        {/* region labels — text + position, never color alone */}
-        <span className="mg-label mg-label--tl">anxious · agitated</span>
-        <span className="mg-label mg-label--tr">excited · alive</span>
-        <span className="mg-label mg-label--bl">numb · flat</span>
-        <span className="mg-label mg-label--br">calm · content</span>
+            <span className="mg-axis mg-axis--v" aria-hidden />
+            <span className="mg-axis mg-axis--h" aria-hidden />
 
-        <span className="mg-edge mg-edge--top">activated</span>
-        <span className="mg-edge mg-edge--bottom">calm</span>
-        <span className="mg-edge mg-edge--left">unpleasant</span>
-        <span className="mg-edge mg-edge--right">pleasant</span>
+            {gpos && (
+              <span
+                className="mg-dot mg-dot--ghost"
+                style={{ left: `${gpos.x * 100}%`, top: `${gpos.y * 100}%` }}
+                aria-hidden
+              />
+            )}
+            {pos ? (
+              <span
+                className="mg-dot"
+                style={{ left: `${pos.x * 100}%`, top: `${pos.y * 100}%` }}
+              />
+            ) : (
+              <span className="mg-hint">tap where you are</span>
+            )}
+          </div>
 
-        {gpos && (
-          <span
-            className="mg-dot mg-dot--ghost"
-            style={{ left: `${gpos.x * 100}%`, top: `${gpos.y * 100}%` }}
-            aria-hidden
-          />
-        )}
-        {pos ? (
-          <span
-            className="mg-dot"
-            style={{ left: `${pos.x * 100}%`, top: `${pos.y * 100}%` }}
-          />
-        ) : (
-          <span className="mg-hint">tap where you are</span>
-        )}
+          {/* X-axis rail — how you feel, left→right */}
+          <div className="mg-x-rail" aria-hidden>
+            <span className="mg-axis-endpoint">unpleasant</span>
+            <span className="mg-axis-name">Feel</span>
+            <span className="mg-axis-endpoint">pleasant</span>
+          </div>
+        </div>
       </div>
+
       {region && (
         <p className="mg-readout">
           <strong>{region.label}</strong>
