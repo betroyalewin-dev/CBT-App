@@ -1,29 +1,23 @@
 .loop-dg {
   display: flex;
   justify-content: center;
-  /* shared tempo so the comet and the node pulses circle in lockstep */
-  --period: 4.8s;
-  --intro: 1.9s;
+  /* shared tempo so the comet, arrows and stage pulses circle in lockstep */
+  --period: 5s;
+  --intro: 1.7s;
 }
 .loop-dg svg {
-  max-width: 290px;
+  max-width: 300px;
 }
 
-.loop-ring,
-.loop-head {
+.loop-ring {
   stroke: var(--q-numb);
   stroke-width: 2.6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.85;
+  opacity: 0.8;
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
-}
-.loop-ring {
-  animation: loop-draw 1400ms cubic-bezier(0.16, 1, 0.3, 1) 150ms forwards;
-}
-.loop-head {
-  animation: loop-draw 500ms cubic-bezier(0.16, 1, 0.3, 1) 1500ms forwards;
+  animation: loop-draw 1400ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
 }
 
 /* a glowing segment that traces the loop, once per period */
@@ -32,7 +26,7 @@
   stroke-width: 3.6;
   stroke-linecap: round;
   fill: none;
-  stroke-dasharray: 13 87;
+  stroke-dasharray: 14 86;
   stroke-dashoffset: 100;
   opacity: 0;
   filter: drop-shadow(
@@ -43,9 +37,26 @@
     loop-travel var(--period) linear var(--intro) infinite;
 }
 
+/* a direction arrow before each stage: drawn once, then it brightens as the
+   travelling current sweeps past it */
+.loop-arrow {
+  stroke: var(--q-numb);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  opacity: 0.55;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation:
+    loop-draw 420ms cubic-bezier(0.16, 1, 0.3, 1) 1300ms forwards,
+    loop-arrow-lit var(--period) ease-in-out
+      calc(var(--intro) + var(--phase, 0) * var(--period)) infinite;
+}
+
 .loop-node {
   opacity: 0;
-  animation: loop-fade 500ms ease 800ms forwards;
+  animation: loop-fade 500ms ease 700ms forwards;
 }
 .loop-node circle {
   fill: var(--q-numb);
@@ -84,18 +95,34 @@
     stroke-dashoffset: 0;
   }
 }
+@keyframes loop-arrow-lit {
+  0% {
+    opacity: 0.55;
+  }
+  5% {
+    opacity: 1;
+    stroke-width: 3.2;
+  }
+  20% {
+    opacity: 0.55;
+    stroke-width: 2.6;
+  }
+  100% {
+    opacity: 0.55;
+  }
+}
 @keyframes loop-ping {
   0% {
     transform: scale(1);
     filter: none;
   }
-  4% {
+  5% {
     transform: scale(1.85);
     filter: drop-shadow(
       0 0 6px color-mix(in oklch, var(--q-numb) 70%, transparent)
     );
   }
-  16% {
+  18% {
     transform: scale(1);
     filter: none;
   }
@@ -107,9 +134,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .loop-ring,
-  .loop-head {
+  .loop-arrow {
     stroke-dashoffset: 0;
     animation: none;
+    opacity: 0.85;
   }
   .loop-node,
   .loop-node circle {
