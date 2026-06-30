@@ -1,33 +1,30 @@
 // Activity categories and the recommender that turns "where you are" into a
 // concrete next thing to try — framed as an n-of-1 experiment, never an order.
 //
-// Three categories on a deliberate difficulty ladder (BA + the wider depression
-// literature: social contact is the strongest, most durable behavioral
-// antidepressant, and sits between effortless pleasure and effortful mastery):
+// Two categories on a deliberate difficulty ladder (the two BA levers the app
+// already tracks with its sliders):
 //
-//   pleasure   — easiest, hedonic, short-term lift (anti-anhedonia)
-//   connection — medium effort, social, durable lift
-//   mastery    — hardest, accomplishment, builds self-efficacy
+//   pleasure — easier, hedonic, short-term lift (anti-anhedonia)
+//   mastery  — harder, accomplishment, builds self-efficacy
 //
 // The recommender combines two questions the user named:
-//   1. "what will be easier" → the journey's pleasureBias picks a target rung on
-//      the ladder (deep dip → pleasure; steadier → mastery)
-//   2. "what they're most deficient in" → recent logs show which category is
-//      starved (low pleasure/mastery ratings; little social contact)
-// so we nudge the easiest *useful* thing, not just the easiest or the most-missing.
+//   1. "what will be easier" → the journey's pleasureBias picks where on the
+//      ladder to aim (deep dip → pleasure; steadier → mastery)
+//   2. "what they're most deficient in" → recent logs show which lever is
+//      starved (low pleasure / low mastery ratings)
+// so we nudge the easier *useful* thing, not just the easier or the most-missing.
 
 import type { ActivityLog } from "./types";
 import type { JourneySignal } from "./journey";
 import type { ExperimentMetric } from "./experiments";
 import { DAY_MS } from "./dashboard";
 
-export type ActivityCategory = "pleasure" | "connection" | "mastery";
+export type ActivityCategory = "pleasure" | "mastery";
 
 /** Position on the easy→hard ladder. Drives the journey-bias match. */
 export const CATEGORY_DIFFICULTY: Record<ActivityCategory, number> = {
   pleasure: 1,
-  connection: 2,
-  mastery: 3,
+  mastery: 2,
 };
 
 export const CATEGORY_META: Record<
@@ -39,11 +36,6 @@ export const CATEGORY_META: Record<
     blurb: "something for pure enjoyment — low effort, quick lift",
     metric: "pleasure",
   },
-  connection: {
-    label: "Connection",
-    blurb: "a bit of contact with another person — the most durable lift there is",
-    metric: "mood",
-  },
   mastery: {
     label: "Mastery",
     blurb: "a small thing with a finish line — a real sense of accomplishment",
@@ -53,8 +45,8 @@ export const CATEGORY_META: Record<
 
 /** Seed activities (from onboarding values) → category. Lower-cased keys. */
 const CATALOG: Record<string, ActivityCategory> = {
-  "message a friend": "connection",
-  "time with family": "connection",
+  "message a friend": "pleasure",
+  "time with family": "pleasure",
   "a short walk": "pleasure",
   "cook something": "mastery",
   "make something": "mastery",
@@ -72,16 +64,8 @@ const CATALOG: Record<string, ActivityCategory> = {
 };
 
 /** Plain "I just opened the app" labels that aren't really activities. */
-const NON_ACTIVITY = new Set([
-  "mood check",
-  "first check-in",
-  "check-in",
-]);
+const NON_ACTIVITY = new Set(["mood check", "first check-in", "check-in"]);
 
-const CONNECTION_WORDS = [
-  "friend", "family", "call", "text", "message", "people", "meet",
-  "coffee", "visit", "talk", "mom", "dad", "partner", "social", "dinner with",
-];
 const MASTERY_WORDS = [
   "clean", "tidy", "work", "task", "finish", "fix", "study", "learn",
   "cook", "build", "make", "organize", "organise", "chore", "errand",
@@ -94,12 +78,11 @@ export function isTrackableActivity(label: string): boolean {
 
 /**
  * Best-guess category for any label. Known seeds map exactly; custom labels fall
- * back to keyword cues, then default to "pleasure" (the lowest-pressure rung).
+ * back to keyword cues, then default to "pleasure" (the lower-pressure rung).
  */
 export function categorize(label: string): ActivityCategory {
   const key = label.trim().toLowerCase();
   if (CATALOG[key]) return CATALOG[key];
-  if (CONNECTION_WORDS.some((w) => key.includes(w))) return "connection";
   if (MASTERY_WORDS.some((w) => key.includes(w))) return "mastery";
   return "pleasure";
 }
@@ -107,7 +90,6 @@ export function categorize(label: string): ActivityCategory {
 /** A sensible default activity per category when the user tracks none. */
 export const DEFAULT_BY_CATEGORY: Record<ActivityCategory, string> = {
   pleasure: "Something you enjoy",
-  connection: "Message a friend",
   mastery: "One small task",
 };
 
@@ -115,13 +97,9 @@ function mean(xs: number[]): number {
   return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0;
 }
 
-/** Share of recent logs we'd want to be social, for the connection-deficiency read. */
-export const TARGET_CONNECTION_SHARE = 0.3;
-
 export interface Deficiency {
   /** Per-category 0…1, higher = more starved. */
   pleasure: number;
-  connection: number;
   mastery: number;
   sampleSize: number;
 }
@@ -138,30 +116,19 @@ function recentActivityLogs(logs: ActivityLog[], now: number): ActivityLog[] {
     .slice(0, 10);
 }
 
-/**
- * What the recent log stream is starved of. Pleasure/mastery come straight off
- * the sliders; connection is inferred from how rarely social activities show up.
- */
+/** What the recent log stream is starved of — straight off the P/M sliders. */
 export function analyzeDeficiency(
   logs: ActivityLog[],
   now: number = Date.now(),
 ): Deficiency {
   const recent = recentActivityLogs(logs, now);
   if (!recent.length) {
-    return { pleasure: 0.5, connection: 0.5, mastery: 0.5, sampleSize: 0 };
+    return { pleasure: 0.5, mastery: 0.5, sampleSize: 0 };
   }
   const pleasure = 1 - mean(recent.map((l) => l.pleasure)) / 10;
   const mastery = 1 - mean(recent.map((l) => l.mastery)) / 10;
-  const connShare =
-    recent.filter((l) => categorize(l.activityLabel) === "connection").length /
-    recent.length;
-  const connection = Math.max(
-    0,
-    Math.min(1, 1 - connShare / TARGET_CONNECTION_SHARE),
-  );
   return {
     pleasure: Math.max(0, Math.min(1, pleasure)),
-    connection,
     mastery: Math.max(0, Math.min(1, mastery)),
     sampleSize: recent.length,
   };
@@ -178,20 +145,20 @@ export interface Recommendation {
   scores: Record<ActivityCategory, number>;
 }
 
-const CATEGORIES: ActivityCategory[] = ["pleasure", "connection", "mastery"];
+const CATEGORIES: ActivityCategory[] = ["pleasure", "mastery"];
 
-/** Journey bias → target rung on the difficulty ladder (1 pleasure … 3 mastery). */
+/** Journey bias → target rung on the difficulty ladder (1 pleasure … 2 mastery). */
 function targetDifficulty(pleasureBias: number): number {
-  return 1 + (1 - pleasureBias) * 2;
+  return 2 - pleasureBias;
 }
 
-/** Spread of the match curve; tighter = harder gating of off-target rungs. */
+/** Spread of the match curve; tighter = harder gating of the off-target rung. */
 const MATCH_SIGMA = 0.55;
 
 /**
- * How well a category matches the target rung, 0…1. A Gaussian (not linear) so an
- * off-target rung falls away fast — e.g. when stabilizing, mastery is effectively
- * off the table, and connection (socially effortful) is well below pleasure.
+ * How well a category matches the target rung, 0…1. A Gaussian (not linear) so
+ * the off-target rung falls away fast — e.g. when stabilizing, mastery is well
+ * below pleasure even if mastery is the bigger gap.
  */
 function easeWeight(cat: ActivityCategory, pleasureBias: number): number {
   const dist = CATEGORY_DIFFICULTY[cat] - targetDifficulty(pleasureBias);
@@ -228,8 +195,8 @@ export interface RecommendInput {
 }
 
 /**
- * The next experiment worth running: the easiest *useful* category given where
- * the person is (journey bias) and what their data is starved of (deficiency).
+ * The next experiment worth running: the easier *useful* lever given where the
+ * person is (journey bias) and which lever their data is starved of (deficiency).
  */
 export function recommendActivity(input: RecommendInput): Recommendation {
   const { journey, logs, activities } = input;
@@ -252,9 +219,7 @@ export function recommendActivity(input: RecommendInput): Recommendation {
     category,
     activityLabel,
     metric: meta.metric,
-    hypothesis: `Does "${activityLabel}" move my ${
-      meta.metric === "mood" ? "mood" : meta.label.toLowerCase()
-    }?`,
+    hypothesis: `Does "${activityLabel}" move my ${meta.label.toLowerCase()}?`,
     rationale: rationaleFor(category, journey, def),
     scores,
   };
@@ -274,9 +239,7 @@ function rationaleFor(
         : "You're in a steadier place, so this is worth a push";
   const starved =
     def.sampleSize === 0
-      ? ""
-      : category === "connection"
-        ? " — and social contact has been thin lately."
-        : ` — and your ${meta.label.toLowerCase()} ratings have been on the low side lately.`;
-  return `${lead}: ${meta.blurb}${starved || "."}`;
+      ? "."
+      : ` — and your ${meta.label.toLowerCase()} ratings have been on the low side lately.`;
+  return `${lead}: ${meta.blurb}${starved}`;
 }
