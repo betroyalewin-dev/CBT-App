@@ -1,150 +1,115 @@
-.loop-dg {
+.dl {
   display: flex;
   justify-content: center;
-  /* shared tempo so the comet, arrows and stage pulses circle in lockstep */
-  --period: 5s;
-  --intro: 1.7s;
+  /* shared tempo so the stages and arrows light in lockstep */
+  --period: 5.4s;
+  --intro: 1.5s;
+  /* cool, calm "negative cycle" palette — never alarm-red */
+  --dl-stroke: color-mix(in oklch, var(--q-numb) 55%, var(--line));
+  --dl-stroke-lit: var(--q-numb);
+  --dl-fill: color-mix(in oklch, var(--q-numb) 10%, var(--surface));
+  --dl-fill-lit: color-mix(in oklch, var(--q-numb) 24%, var(--surface));
+  --dl-glow: color-mix(in oklch, var(--q-numb) 55%, transparent);
 }
-.loop-dg svg {
-  max-width: 300px;
-}
-
-.loop-ring {
-  stroke: var(--q-numb);
-  stroke-width: 2.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.8;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation: loop-draw 1400ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+.dl svg {
+  width: 100%;
+  max-width: 260px;
 }
 
-/* a glowing segment that traces the loop, once per period */
-.loop-comet {
-  stroke: var(--q-numb);
-  stroke-width: 3.6;
-  stroke-linecap: round;
-  fill: none;
-  stroke-dasharray: 14 86;
-  stroke-dashoffset: 100;
-  opacity: 0;
-  filter: drop-shadow(
-    0 0 5px color-mix(in oklch, var(--q-numb) 65%, transparent)
-  );
-  animation:
-    loop-appear 0.01s linear var(--intro) forwards,
-    loop-travel var(--period) linear var(--intro) infinite;
-}
-
-/* a direction arrow before each stage: drawn once, then it brightens as the
-   travelling current sweeps past it */
-.loop-arrow {
-  stroke: var(--q-numb);
-  stroke-width: 2.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-  opacity: 0.55;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation:
-    loop-draw 420ms cubic-bezier(0.16, 1, 0.3, 1) 1300ms forwards,
-    loop-arrow-lit var(--period) ease-in-out
-      calc(var(--intro) + var(--phase, 0) * var(--period)) infinite;
-}
-
-.loop-node {
-  opacity: 0;
-  animation: loop-fade 500ms ease 700ms forwards;
-}
-.loop-node circle {
+.dl-arrowhead {
   fill: var(--q-numb);
+}
+
+/* ── Stage cards ─────────────────────────────────────────────── */
+.dl-card {
+  opacity: 0;
   transform-box: fill-box;
-  transform-origin: center;
-  animation: loop-ping var(--period) ease-in-out
+  animation: dl-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--enter, 0) * 140ms);
+}
+.dl-box {
+  fill: var(--dl-fill);
+  stroke: var(--dl-stroke);
+  stroke-width: 1.5;
+  animation: dl-lit var(--period) ease-in-out
     calc(var(--intro) + var(--phase, 0) * var(--period)) infinite;
 }
-.loop-node text {
+.dl-label {
   fill: var(--ink);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 
-@keyframes loop-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
+/* ── Flow arrows + connector text ────────────────────────────── */
+.dl-flow {
+  stroke: var(--q-numb);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.5;
+  animation: dl-flow-lit var(--period) ease-in-out
+    calc(var(--intro) + var(--phase, 0) * var(--period)) infinite;
 }
-@keyframes loop-fade {
-  to {
-    opacity: 1;
-  }
+.dl-conn {
+  fill: var(--ink-muted);
+  font-family: var(--font-body);
+  font-size: 10.5px;
 }
-@keyframes loop-appear {
-  to {
-    opacity: 1;
-  }
-}
-@keyframes loop-travel {
+
+/* ── Keyframes ───────────────────────────────────────────────── */
+@keyframes dl-in {
   from {
-    stroke-dashoffset: 100;
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes loop-arrow-lit {
-  0% {
-    opacity: 0.55;
-  }
-  5% {
     opacity: 1;
-    stroke-width: 3.2;
-  }
-  20% {
-    opacity: 0.55;
-    stroke-width: 2.6;
-  }
-  100% {
-    opacity: 0.55;
+    transform: none;
   }
 }
-@keyframes loop-ping {
-  0% {
-    transform: scale(1);
-    filter: none;
-  }
-  5% {
-    transform: scale(1.85);
-    filter: drop-shadow(
-      0 0 6px color-mix(in oklch, var(--q-numb) 70%, transparent)
-    );
-  }
-  18% {
-    transform: scale(1);
-    filter: none;
-  }
+@keyframes dl-lit {
+  0%,
+  26%,
   100% {
-    transform: scale(1);
+    fill: var(--dl-fill);
+    stroke: var(--dl-stroke);
+    stroke-width: 1.5;
     filter: none;
+  }
+  8% {
+    fill: var(--dl-fill-lit);
+    stroke: var(--dl-stroke-lit);
+    stroke-width: 2.4;
+    filter: drop-shadow(0 0 7px var(--dl-glow));
+  }
+}
+@keyframes dl-flow-lit {
+  0%,
+  32%,
+  100% {
+    opacity: 0.5;
+    stroke-width: 2.2;
+    filter: none;
+  }
+  8% {
+    opacity: 1;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 5px var(--dl-glow));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .loop-ring,
-  .loop-arrow {
-    stroke-dashoffset: 0;
-    animation: none;
-    opacity: 0.85;
-  }
-  .loop-node,
-  .loop-node circle {
+  .dl-card {
     opacity: 1;
+    transform: none;
     animation: none;
   }
-  .loop-comet {
-    display: none;
+  .dl-box {
+    animation: none;
+  }
+  .dl-flow {
+    opacity: 0.7;
+    animation: none;
   }
 }
