@@ -6,6 +6,15 @@
   flex-wrap: wrap;
   gap: var(--s-2);
 }
+.activity-group + .activity-group {
+  margin-top: var(--s-3);
+}
+.activity-group-title {
+  display: block;
+  margin-bottom: var(--s-2);
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+}
 .log-custom,
 .log-note {
   width: 100%;

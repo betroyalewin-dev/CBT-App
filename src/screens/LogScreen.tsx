@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore, newId } from "../store/store";
 import { MoodGrid } from "../components/MoodGrid";
 import { PMSlider } from "../components/PMSlider";
+import {
+  ACTIVITY_CATEGORIES,
+  SEED_ACTIVITY_LABELS,
+} from "../domain/activities";
 import type { MoodPoint } from "../domain/types";
 import "./LogScreen.css";
 
@@ -19,7 +23,13 @@ export function LogScreen() {
   const [showDetail, setShowDetail] = useState(false);
   const [note, setNote] = useState("");
 
-  const choices = ["Mood check", ...state.activities];
+  // The user's own activities that aren't already in the seeded catalog,
+  // surfaced first so their real day is a tap or two from the top.
+  const yours = useMemo(() => {
+    const seeded = new Set(SEED_ACTIVITY_LABELS);
+    return state.activities.filter((a) => !seeded.has(a));
+  }, [state.activities]);
+
   const label = activity === "__custom" ? customActivity.trim() : activity;
   const canSave = mood !== null && label.length > 0;
 
@@ -55,25 +65,62 @@ export function LogScreen() {
 
       <section className="stack-sm">
         <span className="eyebrow">What were you doing?</span>
-        <div className="chiprow">
-          {choices.map((c) => (
+
+        <div className="activity-group">
+          <div className="chiprow">
             <button
-              key={c}
               type="button"
-              className={`pill ${activity === c ? "is-selected" : ""}`}
-              onClick={() => setActivity(c)}
+              className={`pill ${activity === "Mood check" ? "is-selected" : ""}`}
+              onClick={() => setActivity("Mood check")}
             >
-              {c}
+              Mood check
             </button>
-          ))}
-          <button
-            type="button"
-            className={`pill ${activity === "__custom" ? "is-selected" : ""}`}
-            onClick={() => setActivity("__custom")}
-          >
-            + something else
-          </button>
+            <button
+              type="button"
+              className={`pill ${activity === "__custom" ? "is-selected" : ""}`}
+              onClick={() => setActivity("__custom")}
+            >
+              + something else
+            </button>
+          </div>
         </div>
+
+        {yours.length > 0 && (
+          <div className="activity-group">
+            <span className="activity-group-title">Yours</span>
+            <div className="chiprow">
+              {yours.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`pill ${activity === c ? "is-selected" : ""}`}
+                  onClick={() => setActivity(c)}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {ACTIVITY_CATEGORIES.map((cat) => (
+          <div key={cat.key} className="activity-group">
+            <span className="activity-group-title">{cat.title}</span>
+            <div className="chiprow">
+              {cat.activities.map((a) => (
+                <button
+                  key={a.label}
+                  type="button"
+                  className={`pill ${activity === a.label ? "is-selected" : ""}`}
+                  onClick={() => setActivity(a.label)}
+                >
+                  {a.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
         {activity === "__custom" && (
           <input
             className="log-custom"
