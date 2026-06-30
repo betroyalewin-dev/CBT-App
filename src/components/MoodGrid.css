@@ -1,7 +1,7 @@
 .moodgrid-wrap {
   display: flex;
   flex-direction: column;
-  gap: var(--s-3);
+  gap: var(--s-4);
   align-items: center;
 }
 
@@ -16,111 +16,70 @@
   touch-action: none;
   user-select: none;
   background: var(--surface);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-1), inset 0 1px 10px oklch(0.4 0.02 240 / 0.04);
+  cursor: crosshair;
+}
+.moodgrid:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
 }
 
-.mg-q {
+/* One continuous emotional space: four corner washes bleed into each other so
+   there are no quadrant seams. Corner→hue matches the dashboard 2×2 exactly
+   (br calm-content green · tr lively amber · tl on-edge rose · bl flat slate). */
+.mg-field {
   position: absolute;
-  width: 50%;
-  height: 50%;
-}
-/* tl: unpleasant + activated → agitated (flat-rose family) */
-.mg-q--tl {
-  top: 0;
-  left: 0;
-  background: var(--q-flat-wash);
-}
-/* tr: pleasant + activated → excited (stressed-amber family) */
-.mg-q--tr {
-  top: 0;
-  right: 0;
-  background: var(--q-stressed-wash);
-}
-/* bl: unpleasant + calm → numb/flat (numb-slate family) */
-.mg-q--bl {
-  bottom: 0;
-  left: 0;
-  background: var(--q-numb-wash);
-}
-/* br: pleasant + calm → calm/content (thriving-green family) */
-.mg-q--br {
-  bottom: 0;
-  right: 0;
-  background: var(--q-thriving-wash);
+  inset: 0;
+  background:
+    radial-gradient(135% 135% at 100% 100%, var(--q-thriving-wash) 0%, transparent 60%),
+    radial-gradient(135% 135% at 100% 0%, var(--q-stressed-wash) 0%, transparent 60%),
+    radial-gradient(135% 135% at 0% 0%, var(--q-flat-wash) 0%, transparent 60%),
+    radial-gradient(135% 135% at 0% 100%, var(--q-numb-wash) 0%, transparent 60%);
+  /* let the corners read clearly while the middle stays calm and quiet */
+  opacity: 0.9;
 }
 
-.mg-axis {
+/* a soft neutral anchor at dead-center — orientation without a hard cross */
+.mg-center {
   position: absolute;
-  background: var(--line);
-}
-.mg-axis--v {
   left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-}
-.mg-axis--h {
   top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  opacity: 0.7;
 }
 
-.mg-label {
-  position: absolute;
-  font-size: 0.72rem;
-  color: var(--ink-muted);
-  font-weight: 600;
-  padding: var(--s-2);
-  pointer-events: none;
-  max-width: 45%;
-}
-.mg-label--tl {
-  top: 0;
-  left: 0;
-}
-.mg-label--tr {
-  top: 0;
-  right: 0;
-  text-align: right;
-}
-.mg-label--bl {
-  bottom: 0;
-  left: 0;
-}
-.mg-label--br {
-  bottom: 0;
-  right: 0;
-  text-align: right;
-}
-
+/* axis anchors: plain, calm words just inside each edge (≥4.5:1, sentence case) */
 .mg-edge {
   position: absolute;
-  font-size: 0.62rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: var(--ink-muted);
-  opacity: 0.7;
   pointer-events: none;
+  white-space: nowrap;
 }
 .mg-edge--top {
-  top: 4px;
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
 }
 .mg-edge--bottom {
-  bottom: 4px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
 }
 .mg-edge--left {
-  left: 4px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: left center;
 }
 .mg-edge--right {
-  right: 4px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
   transform-origin: right center;
@@ -128,21 +87,42 @@
 
 .mg-dot {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--primary);
   border: 3px solid var(--surface);
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--shadow-2), 0 0 0 6px oklch(0.55 0.1 205 / 0.12);
   transform: translate(-50%, -50%);
-  transition: left var(--dur) var(--ease-out), top var(--dur) var(--ease-out);
+  transition:
+    left var(--dur) var(--ease-out),
+    top var(--dur) var(--ease-out);
 }
 .mg-dot--ghost {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background: transparent;
   border: 2px dashed var(--accent);
   box-shadow: none;
+}
+
+/* placement settle: a gentle one-shot halo when a dot first lands */
+.moodgrid.is-set .mg-dot {
+  animation: mg-land var(--dur) var(--ease-out);
+}
+@keyframes mg-land {
+  from {
+    box-shadow: var(--shadow-2), 0 0 0 14px oklch(0.55 0.1 205 / 0);
+  }
+  to {
+    box-shadow: var(--shadow-2), 0 0 0 6px oklch(0.55 0.1 205 / 0.12);
+  }
+}
+
+/* dragging follows the finger 1:1 — no lag, no settle */
+.moodgrid.is-dragging .mg-dot {
+  transition: none;
+  animation: none;
 }
 
 .mg-hint {
@@ -151,23 +131,40 @@
   top: 50%;
   transform: translate(-50%, -50%);
   color: var(--ink-muted);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   background: var(--surface);
-  padding: var(--s-2) var(--s-3);
+  padding: var(--s-2) var(--s-4);
   border-radius: var(--r-pill);
   border: 1px dashed var(--line);
+  box-shadow: var(--shadow-1);
   pointer-events: none;
 }
 
+/* the live readout: the grid narrates your position back to you, in plain words */
 .mg-readout {
-  font-size: 0.95rem;
-  color: var(--ink);
+  min-height: 2.2rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.mg-readout strong {
+.mg-readout-phrase {
   font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.mg-readout-prompt {
+  font-size: 0.95rem;
+  color: var(--ink-muted);
 }
 
-/* dragging shouldn't animate the dot (1:1 with finger) */
-.moodgrid:active .mg-dot {
-  transition: none;
+@media (prefers-reduced-motion: reduce) {
+  .mg-dot {
+    transition: none;
+  }
+  .moodgrid.is-set .mg-dot {
+    animation: none;
+  }
 }

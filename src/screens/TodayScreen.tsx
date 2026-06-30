@@ -5,7 +5,7 @@ import { TrendStrip } from "../components/TrendStrip";
 import { computeDashboard } from "../domain/dashboard";
 import { computeStreak } from "../domain/streak";
 import { QUADRANT_META } from "../domain/mood";
-import { PROFILES } from "../domain/profiles";
+import { assessJourney, type JourneySignal } from "../domain/journey";
 import { GrowthMeter } from "../components/GrowthMeter";
 import "./TodayScreen.css";
 
@@ -21,7 +21,11 @@ export function TodayScreen() {
   const { state } = useStore();
   const dash = computeDashboard(state.logs);
   const streak = computeStreak(state.logs);
-  const profile = state.profile ? PROFILES[state.profile] : null;
+  const journey = assessJourney({
+    axis: state.axis,
+    phq9: state.phq9History[state.phq9History.length - 1],
+    logs: state.logs,
+  });
 
   return (
     <div className="stack today">
@@ -67,18 +71,54 @@ export function TodayScreen() {
         <TrendStrip logs={state.logs} />
       </section>
 
-      {profile && (
-        <section className="panel today-profile">
-          <p className="eyebrow">Your starting picture</p>
-          <h3>{profile.title}</h3>
-          <p className="muted">{profile.blurb}</p>
-        </section>
-      )}
+      <JourneyPanel journey={journey} living={journey.logWeight > 0} />
 
       <Link className="btn btn--primary btn--block" to="/log">
         + Log a moment
       </Link>
     </div>
+  );
+}
+
+function JourneyPanel({
+  journey,
+  living,
+}: {
+  journey: JourneySignal;
+  living: boolean;
+}) {
+  // pleasureBias 0…1 → marker position from the left (Enjoyment end).
+  const markerPct = Math.round((1 - journey.pleasureBias) * 100);
+  return (
+    <section className="panel today-journey">
+      <h3>{journey.title}</h3>
+      <p>{journey.focus}</p>
+
+      <div className="focus-meter">
+        <div
+          className="focus-track"
+          role="img"
+          aria-label={`Where to put your energy right now: ${
+            journey.pleasureBias >= 0.5
+              ? "leaning toward enjoyment"
+              : "leaning toward accomplishment"
+          }`}
+        >
+          <span className="focus-marker" style={{ left: `${markerPct}%` }} />
+        </div>
+        <div className="focus-ends">
+          <span>Enjoyment</span>
+          <span>Accomplishment</span>
+        </div>
+      </div>
+
+      <p className="muted today-journey-why">{journey.rationale}</p>
+      <p className="muted today-journey-source">
+        {living
+          ? "This reads from your recent logs — it moves as you do."
+          : "Based on your check-in for now; it'll move as you log."}
+      </p>
+    </section>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { MoodPoint } from "../domain/types";
-import { emotionRegion, MOOD_MAX, MOOD_MIN } from "../domain/mood";
+import { moodPhrase, MOOD_MAX, MOOD_MIN } from "../domain/mood";
 import "./MoodGrid.css";
 
 interface Props {
@@ -55,20 +55,32 @@ export function MoodGrid({ value, onChange, ghost }: Props) {
 
   const pos = value ? toFrac(value) : null;
   const gpos = ghost ? toFrac(ghost) : null;
-  const region = value ? emotionRegion(value) : null;
+  const phrase = value ? moodPhrase(value) : null;
 
   return (
     <div className="moodgrid-wrap">
+      <p className="mg-readout" aria-hidden>
+        {phrase ? (
+          <span className="mg-readout-phrase">{phrase}</span>
+        ) : (
+          <span className="mg-readout-prompt">
+            Move until the words match how you feel.
+          </span>
+        )}
+      </p>
+
       <div
         ref={ref}
-        className="moodgrid"
+        className={`moodgrid ${value ? "is-set" : "is-empty"} ${
+          dragging ? "is-dragging" : ""
+        }`}
         role="slider"
         tabIndex={0}
-        aria-label="Mood pad: left–right is unpleasant to pleasant, up–down is calm to activated"
+        aria-label="Mood pad: left to right is unpleasant to pleasant, up and down is calm to high-energy"
         aria-valuetext={
           value
-            ? `${region?.label}, valence ${value.valence}, energy ${value.arousal}`
-            : "not set — tap to place your mood"
+            ? `${phrase}. Pleasantness ${value.valence} of 5, energy ${value.arousal} of 5.`
+            : "Not set — tap anywhere to place how you feel."
         }
         onKeyDown={onKeyDown}
         onPointerDown={(e) => {
@@ -80,25 +92,25 @@ export function MoodGrid({ value, onChange, ghost }: Props) {
         onPointerUp={() => setDragging(false)}
         onPointerCancel={() => setDragging(false)}
       >
-        {/* quadrant tints */}
-        <span className="mg-q mg-q--tl" aria-hidden />
-        <span className="mg-q mg-q--tr" aria-hidden />
-        <span className="mg-q mg-q--bl" aria-hidden />
-        <span className="mg-q mg-q--br" aria-hidden />
+        {/* one continuous field — corner washes bleed together, no seams */}
+        <span className="mg-field" aria-hidden />
 
-        <span className="mg-axis mg-axis--v" aria-hidden />
-        <span className="mg-axis mg-axis--h" aria-hidden />
+        {/* faint orientation marks: a calm "neutral" center, no hard quadrant cross */}
+        <span className="mg-center" aria-hidden />
 
-        {/* region labels — text + position, never color alone */}
-        <span className="mg-label mg-label--tl">anxious · agitated</span>
-        <span className="mg-label mg-label--tr">excited · alive</span>
-        <span className="mg-label mg-label--bl">numb · flat</span>
-        <span className="mg-label mg-label--br">calm · content</span>
-
-        <span className="mg-edge mg-edge--top">activated</span>
-        <span className="mg-edge mg-edge--bottom">calm</span>
-        <span className="mg-edge mg-edge--left">unpleasant</span>
-        <span className="mg-edge mg-edge--right">pleasant</span>
+        {/* axis anchors — plain words at the edges (not corner "boxes") */}
+        <span className="mg-edge mg-edge--top" aria-hidden>
+          high energy
+        </span>
+        <span className="mg-edge mg-edge--bottom" aria-hidden>
+          calm / low energy
+        </span>
+        <span className="mg-edge mg-edge--left" aria-hidden>
+          unpleasant
+        </span>
+        <span className="mg-edge mg-edge--right" aria-hidden>
+          pleasant
+        </span>
 
         {gpos && (
           <span
@@ -111,16 +123,14 @@ export function MoodGrid({ value, onChange, ghost }: Props) {
           <span
             className="mg-dot"
             style={{ left: `${pos.x * 100}%`, top: `${pos.y * 100}%` }}
+            aria-hidden
           />
         ) : (
-          <span className="mg-hint">tap where you are</span>
+          <span className="mg-hint" aria-hidden>
+            tap anywhere
+          </span>
         )}
       </div>
-      {region && (
-        <p className="mg-readout">
-          <strong>{region.label}</strong>
-        </p>
-      )}
     </div>
   );
 }

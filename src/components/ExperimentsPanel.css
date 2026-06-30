@@ -82,3 +82,35 @@
   font-size: 0.88rem;
   text-align: center;
 }
+
+/* ── Suggested next experiment ────────────────────────────────── */
+.experiment--rec {
+  border-color: color-mix(in oklch, var(--primary) 35%, var(--line));
+  background: linear-gradient(
+    180deg,
+    var(--primary-wash) 0%,
+    var(--surface) 55%
+  );
+}
+.experiment-rec-tag {
+  align-self: flex-start;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--primary-strong);
+  background: var(--surface);
+  border: 1px solid color-mix(in oklch, var(--primary) 30%, var(--line));
+  border-radius: var(--r-pill);
+  padding: var(--s-1) var(--s-3);
+}
+.experiment--rec h3 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+.experiment-rec-why {
+  color: var(--ink);
+  margin: 0;
+}
+.experiment-rec-hyp {
+  font-size: 0.86rem;
+  margin: 0;
+}

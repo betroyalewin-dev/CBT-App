@@ -9,6 +9,12 @@ import {
   type Experiment,
   type ExperimentMetric,
 } from "../domain/experiments";
+import { assessJourney } from "../domain/journey";
+import {
+  recommendActivity,
+  CATEGORY_META,
+  isTrackableActivity,
+} from "../domain/activities";
 import { XP } from "../domain/xp";
 import "./ExperimentsPanel.css";
 
@@ -70,6 +76,8 @@ function ReadyState({ seedLabel }: { seedLabel?: string }) {
 
   return (
     <div className="stack">
+      {!seedLabel && <Recommended active={active} />}
+
       {active.map((exp) => (
         <ExperimentCard key={exp.id} exp={exp} />
       ))}
@@ -82,6 +90,62 @@ function ReadyState({ seedLabel }: { seedLabel?: string }) {
         </p>
       )}
     </div>
+  );
+}
+
+/**
+ * The app's own suggestion for the next experiment — derived from where the
+ * person is in their recovery (pleasure-first when low, mastery as they climb)
+ * and what their recent logs are starved of. Framed as an invitation to test,
+ * never an instruction.
+ */
+function Recommended({ active }: { active: Experiment[] }) {
+  const { state, dispatch } = useStore();
+  const journey = assessJourney({
+    axis: state.axis,
+    phq9: state.phq9History[state.phq9History.length - 1],
+    logs: state.logs,
+  });
+  const rec = recommendActivity({
+    journey,
+    logs: state.logs,
+    activities: state.activities,
+  });
+  const meta = CATEGORY_META[rec.category];
+
+  // Don't suggest what's already being tested.
+  if (active.some((e) => e.activityLabel === rec.activityLabel)) return null;
+
+  function start() {
+    if (isTrackableActivity(rec.activityLabel)) {
+      dispatch({ type: "addActivity", label: rec.activityLabel });
+    }
+    dispatch({
+      type: "addExperiment",
+      experiment: {
+        id: newId(),
+        activityLabel: rec.activityLabel,
+        metric: rec.metric,
+        hypothesis: rec.hypothesis,
+        startedAt: Date.now(),
+        days: DEFAULT_EXPERIMENT_DAYS,
+      },
+    });
+  }
+
+  return (
+    <article className="panel experiment experiment--rec">
+      <span className="experiment-rec-tag">Suggested next · {meta.label}</span>
+      <h3>{rec.activityLabel}</h3>
+      <p className="experiment-rec-why">{rec.rationale}</p>
+      <p className="muted experiment-rec-hyp">
+        We'd compare days you do this against days you don't, for{" "}
+        {DEFAULT_EXPERIMENT_DAYS} days — a hunch to test, not a prescription.
+      </p>
+      <button className="btn btn--primary" onClick={start}>
+        Test this for {DEFAULT_EXPERIMENT_DAYS} days
+      </button>
+    </article>
   );
 }
 

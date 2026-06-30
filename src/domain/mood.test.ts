@@ -3,6 +3,7 @@ import {
   toPercent,
   pmToPercent,
   emotionRegion,
+  moodPhrase,
   quadrantFromAxis,
 } from "./mood";
 
@@ -35,6 +36,22 @@ describe("emotionRegion (circumplex)", () => {
   });
   it("near center → neutral", () => {
     expect(emotionRegion({ valence: 0, arousal: 0 }).key).toBe("neutral");
+  });
+});
+
+describe("moodPhrase (live readout)", () => {
+  it("narrates each corner of the continuous space", () => {
+    expect(moodPhrase({ valence: -4, arousal: -4 })).toBe("Low and heavy");
+    expect(moodPhrase({ valence: -4, arousal: 4 })).toBe("Tense and on edge");
+    expect(moodPhrase({ valence: 4, arousal: -4 })).toBe("Calm and content");
+    expect(moodPhrase({ valence: 4, arousal: 4 })).toBe("Bright and lively");
+  });
+  it("names the dead center", () => {
+    expect(moodPhrase({ valence: 0, arousal: 0 })).toBe("Right in the middle");
+  });
+  it("treats the neutral band as mid, not a corner", () => {
+    expect(moodPhrase({ valence: 0.5, arousal: -4 })).toBe("Quiet, neutral");
+    expect(moodPhrase({ valence: 4, arousal: 0.5 })).toBe("Good, steady");
   });
 });
 

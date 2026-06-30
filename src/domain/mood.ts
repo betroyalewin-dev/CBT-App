@@ -40,6 +40,34 @@ export function emotionRegion(mood: MoodPoint): EmotionRegion {
   return { key: "excited", label: "excited / energized", corner: "tr" };
 }
 
+/** Neutral band half-width on each −5…+5 axis (matches emotionRegion). */
+const NEUTRAL_BAND = 1;
+
+type Band = "lo" | "mid" | "hi";
+
+function band(v: number): Band {
+  if (v <= -NEUTRAL_BAND) return "lo";
+  if (v >= NEUTRAL_BAND) return "hi";
+  return "mid";
+}
+
+/**
+ * A plain-language read of a mood point — the live readout under the grid.
+ * Narrates the *continuous* space as one short, honest phrase (valence × arousal),
+ * so a tired user just moves the dot until the words fit, instead of decoding two
+ * axes. Rows = valence (unpleasant→pleasant), columns = arousal (calm→activated).
+ */
+export function moodPhrase(mood: MoodPoint): string {
+  const v = band(mood.valence); // lo = unpleasant, hi = pleasant
+  const a = band(mood.arousal); // lo = calm/low energy, hi = activated
+  const TABLE: Record<Band, Record<Band, string>> = {
+    lo: { lo: "Low and heavy", mid: "Low and weary", hi: "Tense and on edge" },
+    mid: { lo: "Quiet, neutral", mid: "Right in the middle", hi: "Restless" },
+    hi: { lo: "Calm and content", mid: "Good, steady", hi: "Bright and lively" },
+  };
+  return TABLE[v][a];
+}
+
 /**
  * The dashboard 2×2 quadrant from reward/stress percentages (0–100).
  * Shares its coordinate system with the mood grid: reward≈valence, stress≈arousal.
