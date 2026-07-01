@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-01T16:58:41Z",
+  "title": "Design System: Companion",
+  "extensions": {
+    "colorMeta": {
+      "tide-primary": {
+        "role": "primary",
+        "displayName": "Tide",
+        "canonical": "oklch(0.55 0.10 205)",
+        "canonicalDark": "oklch(0.70 0.10 205)",
+        "tonalRamp": ["oklch(0.15 0.10 205)", "oklch(0.28 0.10 205)", "oklch(0.40 0.10 205)", "oklch(0.52 0.10 205)", "oklch(0.64 0.10 205)", "oklch(0.76 0.10 205)", "oklch(0.86 0.10 205)", "oklch(0.95 0.10 205)"]
+      },
+      "ember-accent": {
+        "role": "secondary",
+        "displayName": "Ember",
+        "canonical": "oklch(0.66 0.14 45)",
+        "canonicalDark": "oklch(0.74 0.13 50)",
+        "tonalRamp": ["oklch(0.15 0.14 45)", "oklch(0.28 0.14 45)", "oklch(0.40 0.14 45)", "oklch(0.52 0.14 45)", "oklch(0.64 0.14 45)", "oklch(0.76 0.14 45)", "oklch(0.86 0.14 45)", "oklch(0.95 0.14 45)"]
+      },
+      "quadrant-thriving": {
+        "role": "data",
+        "displayName": "Thriving Green",
+        "canonical": "oklch(0.70 0.11 165)",
+        "canonicalDark": "oklch(0.74 0.11 165)",
+        "tonalRamp": ["oklch(0.15 0.11 165)", "oklch(0.28 0.11 165)", "oklch(0.40 0.11 165)", "oklch(0.52 0.11 165)", "oklch(0.64 0.11 165)", "oklch(0.76 0.11 165)", "oklch(0.86 0.11 165)", "oklch(0.95 0.11 165)"]
+      },
+      "quadrant-stressed": {
+        "role": "data",
+        "displayName": "Stressed Amber",
+        "canonical": "oklch(0.74 0.13 70)",
+        "canonicalDark": "oklch(0.78 0.12 70)",
+        "tonalRamp": ["oklch(0.15 0.13 70)", "oklch(0.28 0.13 70)", "oklch(0.40 0.13 70)", "oklch(0.52 0.13 70)", "oklch(0.64 0.13 70)", "oklch(0.76 0.13 70)", "oklch(0.86 0.13 70)", "oklch(0.95 0.13 70)"]
+      },
+      "quadrant-numb": {
+        "role": "data",
+        "displayName": "Numb Slate",
+        "canonical": "oklch(0.66 0.07 255)",
+        "canonicalDark": "oklch(0.70 0.07 255)",
+        "tonalRamp": ["oklch(0.15 0.07 255)", "oklch(0.28 0.07 255)", "oklch(0.40 0.07 255)", "oklch(0.52 0.07 255)", "oklch(0.64 0.07 255)", "oklch(0.76 0.07 255)", "oklch(0.86 0.07 255)", "oklch(0.95 0.07 255)"]
+      },
+      "quadrant-flat": {
+        "role": "data",
+        "displayName": "Flat Rose",
+        "canonical": "oklch(0.62 0.12 20)",
+        "canonicalDark": "oklch(0.66 0.13 20)",
+        "tonalRamp": ["oklch(0.15 0.12 20)", "oklch(0.28 0.12 20)", "oklch(0.40 0.12 20)", "oklch(0.52 0.12 20)", "oklch(0.64 0.12 20)", "oklch(0.76 0.12 20)", "oklch(0.86 0.12 20)", "oklch(0.95 0.12 20)"]
+      },
+      "safety": {
+        "role": "signal",
+        "displayName": "Safety Coral",
+        "canonical": "oklch(0.55 0.16 25)",
+        "canonicalDark": "oklch(0.68 0.16 28)",
+        "tonalRamp": ["oklch(0.15 0.16 25)", "oklch(0.28 0.16 25)", "oklch(0.40 0.16 25)", "oklch(0.52 0.16 25)", "oklch(0.64 0.16 25)", "oklch(0.76 0.16 25)", "oklch(0.86 0.16 25)", "oklch(0.95 0.16 25)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display / Headings", "purpose": "Screen titles, reflective prompts. Warm literary serif for affect-labeling moments." },
+      "body": { "displayName": "Body / UI", "purpose": "Interface copy, prose, controls. Humanist system sans." },
+      "mono": { "displayName": "Numeral", "purpose": "PHQ-9 scores, P/M values, XP counters — tabular-nums." }
+    },
+    "shadows": [
+      { "name": "resting", "value": "0 1px 2px oklch(0.4 0.02 240 / 0.06), 0 1px 3px oklch(0.4 0.02 240 / 0.08)", "purpose": "Default elevation for panels, primary buttons, slider thumbs." },
+      { "name": "lifted", "value": "0 6px 24px oklch(0.4 0.02 240 / 0.1)", "purpose": "Genuinely floating surfaces only: XP reward toast, modal-adjacent sheets." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "The only easing curve in the system. No bounce, no elastic. ~160-220ms." }
+    ],
+    "breakpoints": [
+      { "name": "content-max", "value": "480px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Pill-shaped primary action button.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Log today</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid transparent; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1), background 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-primary { background: oklch(0.55 0.10 205); color: oklch(0.99 0.005 205); box-shadow: 0 1px 2px oklch(0.4 0.02 240 / 0.06), 0 1px 3px oklch(0.4 0.02 240 / 0.08); } .ds-btn-primary:hover { background: oklch(0.48 0.11 205); } .ds-btn-primary:focus-visible { outline: 2.5px solid oklch(0.55 0.10 205); outline-offset: 2px; } .ds-btn-primary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary/tertiary action, transparent with a hairline border.",
+      "html": "<button class=\"ds-btn ds-btn-ghost\">Not now</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px; background: transparent; border: 1px solid oklch(0.90 0.006 220); color: oklch(0.24 0.02 240); font-weight: 600; transition: background 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-ghost:hover { background: oklch(0.965 0.006 220); } .ds-btn-ghost:focus-visible { outline: 2.5px solid oklch(0.55 0.10 205); outline-offset: 2px; }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "The base content surface. Never nested inside another panel.",
+      "html": "<div class=\"ds-panel\"><h3 class=\"ds-panel-title\">This week</h3><p class=\"ds-panel-body\">Your mood has been steadier than last week, especially after evening walks.</p></div>",
+      "css": ".ds-panel { background: oklch(1 0 0); border: 1px solid oklch(0.90 0.006 220); border-radius: 16px; padding: 24px; box-shadow: 0 1px 2px oklch(0.4 0.02 240 / 0.06), 0 1px 3px oklch(0.4 0.02 240 / 0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-panel-title { font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif; font-weight: 600; font-size: 1.12rem; color: oklch(0.24 0.02 240); margin-bottom: 8px; } .ds-panel-body { color: oklch(0.46 0.02 240); line-height: 1.55; }"
+    },
+    {
+      "name": "Selected Pill",
+      "kind": "chip",
+      "refersTo": "pill-selected",
+      "description": "Selectable chip/pill for values and starter activities, with a selected state.",
+      "html": "<button class=\"ds-pill is-selected\" aria-pressed=\"true\">Morning walk</button><button class=\"ds-pill\" aria-pressed=\"false\">Journaling</button>",
+      "css": ".ds-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; border: 1px solid oklch(0.90 0.006 220); background: oklch(1 0 0); color: oklch(0.24 0.02 240); font-weight: 500; min-height: 44px; margin-right: 8px; transition: background 160ms cubic-bezier(0.22, 1, 0.36, 1), border-color 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-pill.is-selected { background: oklch(0.95 0.03 205); border-color: oklch(0.55 0.10 205); color: oklch(0.48 0.11 205); font-weight: 600; } .ds-pill:focus-visible { outline: 2.5px solid oklch(0.55 0.10 205); outline-offset: 2px; }"
+    },
+    {
+      "name": "Bottom Tab Bar",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Thumb-reachable four-tab navigation; the Safety tab is always coral, active or not.",
+      "html": "<nav class=\"ds-tabbar\"><a class=\"ds-tab is-active\" href=\"#\">Today</a><a class=\"ds-tab\" href=\"#\">Log</a><a class=\"ds-tab\" href=\"#\">Insights</a><a class=\"ds-tab ds-tab-safety\" href=\"#\">Safety</a></nav>",
+      "css": ".ds-tabbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 8px 12px; background: color-mix(in oklch, oklch(1 0 0) 88%, transparent); backdrop-filter: blur(12px); border-top: 1px solid oklch(0.90 0.006 220); } .ds-tab { display: flex; align-items: center; justify-content: center; min-height: 54px; border-radius: 10px; text-decoration: none; color: oklch(0.46 0.02 240); font-size: 0.72rem; font-weight: 600; transition: color 160ms cubic-bezier(0.22, 1, 0.36, 1), background 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-tab.is-active { color: oklch(0.48 0.11 205); background: oklch(0.95 0.03 205); } .ds-tab-safety { color: oklch(0.55 0.16 25); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A calm friend in a dim room",
+    "overview": "Companion is built for one recurring scene: late evening, low light, a tired person on the couch tapping to log how they feel. Every design decision is tested against that scene — not \"does this look good in a portfolio,\" but \"does this feel kind to someone with no energy to spare, possibly at 1am, possibly in crisis.\" The system reads as a steady, well-trained friend: warm and plain-spoken, never clinical-cold, never chirpy-wellness. This is explicitly not a clinical/medical dashboard and explicitly not a chirpy wellness app or gamified habit tracker. Color strategy is restrained: quiet neutral surfaces, one calm teal primary, one warm accent reserved for human/hope moments. The four mood-quadrant hues are a small, deliberate data palette, not decoration — the only place the system spends color freely.",
+    "keyCharacteristics": [
+      "Restrained color, spent deliberately (one primary, one accent, four data hues)",
+      "Literary serif for reflection, humanist sans for interface, mono for numbers",
+      "Soft geometry throughout — no sharp corners, no side-stripe accents",
+      "Ease-out-only motion, never bouncy, always reduced-motion-safe",
+      "Safety is ambient furniture, never a modal, never gated"
+    ],
+    "rules": [
+      { "name": "The Rarity Rule", "body": "Ember accent appears only at moments of genuine reward or encouragement — never as decoration, never as a structural color. If it's on screen and nothing good just happened, remove it.", "section": "colors" },
+      { "name": "The No Color-Only Rule", "body": "Every quadrant and safety signal pairs its color with position, a label, and an icon. A screen that only a sighted, color-typical user can read is a broken screen, not a finished one.", "section": "colors" },
+      { "name": "The Calm Ceiling Rule", "body": "Display clamp max stays ≤ 2.2rem in-app. This product never needs to shout to be heard.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat or resting-shadow at rest. Nothing gets the lifted shadow just for looking important; it's earned by actually floating over content.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use OKLCH for every color token; keep the primary hue at 205° and the accent at 45° so new colors stay in-family.",
+      "Do pair every quadrant/safety color with position, label, and icon — never color alone.",
+      "Do cap in-app display type at clamp(1.6rem, 1.2rem + 2vw, 2.2rem) (≤2.2rem); this is a companion app, not a landing page.",
+      "Do keep tap targets ≥44px and focus rings visible (2.5px solid var(--primary), 2px offset) for low-dexterity, low-energy use.",
+      "Do give every animation a prefers-reduced-motion: reduce fallback (instant placement or crossfade) — required, not optional.",
+      "Do keep the Safety route always reachable from the app bar and the tab bar, ungated, unconditional.",
+      "Do separate sections with space and a single hairline rather than nested boxes."
+    ],
+    "donts": [
+      "Don't use gradient text, ever — this is one of PRODUCT.md's named AI-slop anti-references.",
+      "Don't use a border-left/border-right stripe greater than 1px as a colored accent (no side-stripe borders).",
+      "Don't use glassmorphism as a default treatment — the blurred tab bar is the one deliberate exception; it doesn't spread further.",
+      "Don't build identical card grids or nest a card inside a card.",
+      "Don't put a tiny tracked-uppercase eyebrow above every section, or numbered section markers (01 / 02 / 03) as default scaffolding.",
+      "Don't shame streaks or punish missed days — missed days get \"welcome back,\" not guilt.",
+      "Don't make points/XP the point — gamification is decoration for a reward already earned from the data, never a manipulation layer.",
+      "Don't gate or add confirmation friction to the Safety route, and don't style it as a flashing alarm.",
+      "Don't rely on color alone anywhere valence/quadrant meaning is encoded."
+    ]
+  }
+}
