@@ -15,6 +15,7 @@ import type {
   SafetyPlan,
 } from "../domain/types";
 import type { Experiment } from "../domain/experiments";
+import type { LoopKey } from "../domain/loops";
 import {
   awardForLog,
   awardForPhq9,
@@ -46,6 +47,7 @@ const initialState: AppState = {
   xp: 0,
   experiments: [],
   lastAward: null,
+  loopFeedback: {},
 };
 
 type Action =
@@ -68,6 +70,11 @@ type Action =
   | { type: "addExperiment"; experiment: Experiment }
   | { type: "claimExperiment"; id: string; reason: string }
   | { type: "clearAward" }
+  | {
+      type: "respondToLoop";
+      key: LoopKey;
+      response: "confirmed" | "rejected";
+    }
   | { type: "reset" };
 
 /** Apply an XP award, bumping the total and stashing the transient animation payload. */
@@ -140,6 +147,14 @@ function reducer(state: AppState, action: Action): AppState {
     }
     case "clearAward":
       return state.lastAward ? { ...state, lastAward: null } : state;
+    case "respondToLoop":
+      return {
+        ...state,
+        loopFeedback: {
+          ...state.loopFeedback,
+          [action.key]: { response: action.response, at: Date.now() },
+        },
+      };
     case "saveSafetyPlan":
       return {
         ...state,
