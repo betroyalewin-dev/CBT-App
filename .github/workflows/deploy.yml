@@ -2,7 +2,6 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/superpowers-impeccable-setup-kr9kae]
 
 permissions:
   contents: read
@@ -16,6 +15,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.ref_name == github.event.repository.default_branch
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
