@@ -3,6 +3,7 @@
 
 import type { Experiment } from "./experiments";
 import type { XpAward } from "./xp";
+import type { ActivitySample, ActivitySourceConn } from "./activity";
 
 /** A point on the valence×arousal circumplex. Both axes are −5…+5. */
 export interface MoodPoint {
@@ -90,6 +91,12 @@ export interface AppState {
   xp: number;
   /** Active and completed n-of-1 experiments (see domain/experiments.ts). */
   experiments: Experiment[];
+  /**
+   * Movement module (see domain/activity.ts + ACTIVITY_SCORE.md).
+   * Deliberately decoupled from the BA model — never feeds axis/profile/XP.
+   */
+  activitySources: ActivitySourceConn[];
+  activitySamples: ActivitySample[];
   /** Transient: the most recent XP award, for the reward animation. Not persisted. */
   lastAward?: XpAward | null;
 }

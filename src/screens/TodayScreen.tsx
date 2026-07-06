@@ -7,6 +7,7 @@ import { computeStreak } from "../domain/streak";
 import { QUADRANT_META } from "../domain/mood";
 import { PROFILES } from "../domain/profiles";
 import { GrowthMeter } from "../components/GrowthMeter";
+import { MovementCard } from "../components/MovementCard";
 import "./TodayScreen.css";
 
 function greeting(now = new Date()): string {
@@ -61,6 +62,10 @@ export function TodayScreen() {
             </Link>
           </div>
         )}
+      </section>
+
+      <section className="panel">
+        <MovementCard />
       </section>
 
       <section className="panel">

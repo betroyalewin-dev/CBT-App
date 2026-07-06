@@ -16,6 +16,11 @@ import type {
 } from "../domain/types";
 import type { Experiment } from "../domain/experiments";
 import {
+  upsertSample,
+  type ActivitySample,
+  type ActivitySourceId,
+} from "../domain/activity";
+import {
   awardForLog,
   awardForPhq9,
   levelFromXp,
@@ -45,6 +50,8 @@ const initialState: AppState = {
   anxiousFlag: false,
   xp: 0,
   experiments: [],
+  activitySources: [],
+  activitySamples: [],
   lastAward: null,
 };
 
@@ -68,6 +75,9 @@ type Action =
   | { type: "addExperiment"; experiment: Experiment }
   | { type: "claimExperiment"; id: string; reason: string }
   | { type: "clearAward" }
+  | { type: "connectActivitySource"; source: ActivitySourceId; samples?: ActivitySample[] }
+  | { type: "disconnectActivitySource"; source: ActivitySourceId }
+  | { type: "recordMovement"; sample: ActivitySample }
   | { type: "reset" };
 
 /** Apply an XP award, bumping the total and stashing the transient animation payload. */
@@ -140,6 +150,33 @@ function reducer(state: AppState, action: Action): AppState {
     }
     case "clearAward":
       return state.lastAward ? { ...state, lastAward: null } : state;
+    case "connectActivitySource": {
+      if (state.activitySources.some((s) => s.id === action.source)) return state;
+      return {
+        ...state,
+        activitySources: [
+          ...state.activitySources,
+          { id: action.source, connectedAt: Date.now() },
+        ],
+        activitySamples: action.samples
+          ? [...state.activitySamples, ...action.samples]
+          : state.activitySamples,
+      };
+    }
+    case "disconnectActivitySource":
+      // Disconnect purges that source's data — one tap, fully reversible-in.
+      return {
+        ...state,
+        activitySources: state.activitySources.filter((s) => s.id !== action.source),
+        activitySamples: state.activitySamples.filter(
+          (s) => s.source !== action.source,
+        ),
+      };
+    case "recordMovement":
+      return {
+        ...state,
+        activitySamples: upsertSample(state.activitySamples, action.sample),
+      };
     case "saveSafetyPlan":
       return {
         ...state,
