@@ -300,7 +300,8 @@ symptom). So:
 5. Forgiving streaks + insight-based unlocks
 
 **v2:** scheduling + graded tasks, TRAP/TRAC avoidance flow, JITAI nudges,
-clinician report export, passive sensing (sleep/steps/screen-time, opt-in).
+clinician report export, passive sensing (sleep/steps/screen-time, opt-in —
+now planned in detail as the activity signal, see `ACTIVITY_SCORE.md`).
 
 **v3:** aggregate/population recommendations (privacy-walled), personalized
 quests, values/goals (ACT) layer, micro-psychoeducation.
