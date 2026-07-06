@@ -3,6 +3,7 @@
 
 import type { Experiment } from "./experiments";
 import type { XpAward } from "./xp";
+import type { LoopKey } from "./loops";
 
 /** A point on the valence×arousal circumplex. Both axes are −5…+5. */
 export interface MoodPoint {
@@ -90,6 +91,8 @@ export interface AppState {
   xp: number;
   /** Active and completed n-of-1 experiments (see domain/experiments.ts). */
   experiments: Experiment[];
+  /** User's confirm/reject response to the loop hypothesis card, per loop (see domain/loops.ts). */
+  loopFeedback: Partial<Record<LoopKey, { response: "confirmed" | "rejected"; at: number }>>;
   /** Transient: the most recent XP award, for the reward animation. Not persisted. */
   lastAward?: XpAward | null;
 }

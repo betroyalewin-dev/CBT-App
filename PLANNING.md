@@ -60,6 +60,54 @@ device territory and is the honest framing.
 
 ---
 
+## 2.5 The four maintenance loops (loop-weighted triage)
+
+Depression isn't one loop — it's several distinct feedback loops that can each
+maintain low mood on their own, and usually co-occur. Rather than a diagnostic
+tree that sorts a user into one bucket, we treat the tree as an **instrument for
+weighting which loop(s) are most active right now**, so support can be tailored
+to the actual deficiency instead of a generic playbook. Loop membership is a
+hypothesis to confirm with the user ("does this ring true?"), never a verdict,
+and it's expected to shift week to week — the assessment re-runs on a rolling
+window rather than once at onboarding.
+
+| Loop | Mechanism | Interrupt |
+|------|-----------|-----------|
+| **Withdrawal** (low reward) | Low mood → less activity → less mastery & pleasure → lower mood. | Activity scheduling, graded tasks, shrink-the-step. Motivation *follows* action here, it doesn't precede it. |
+| **Overwhelm** (appraisal) | Demands pile up → "I can't cope" appraisal → paralysis or frantic multitasking → nothing finishes → more evidence for "I can't cope." | Problem-solving (triage, break down, drop/delegate) *and* cognitive restructuring (test the appraisal itself). |
+| **Avoidance** | Discomfort → escape behavior (scrolling, cancelling, procrastinating) → short-term relief → problem grows → more discomfort. | TRAP → TRAC: name the trigger/response/pattern, swap in an alternative coping behavior. |
+| **Rumination** | Free time → replaying / self-criticism → lower mood → less action → more free time to ruminate. | Attention redirection into a concrete, chosen activity — routes back into the withdrawal loop's interrupt. |
+
+Note that the reward and stress axes already driving the dashboard 2×2 (§5.3)
+are the same two dimensions withdrawal and overwhelm project onto — the loop
+model doesn't replace that axis work, it adds the avoidance and rumination
+loops the 2×2 can't see, and gives all four a shared, testable inference layer.
+
+**How loop weight is inferred** (`src/domain/loops.ts`, `assessLoops`):
+mostly from data the app already collects, with a couple of proxies flagged as
+provisional until richer signal exists.
+
+- **Withdrawal** — reward axis low (blended valence/Pleasure/Mastery), a
+  higher share of recent logs in the flat (low-valence, low-arousal) mood
+  region, and a drop in logging rate vs. the prior week.
+- **Overwhelm** — stress axis high (arousal-driven), a higher share of recent
+  logs in the agitated (low-valence, high-arousal) mood region.
+- **Avoidance** *(proxy)* — logging rate drop-off, weighted up when a gap in
+  logging immediately follows a negative-valence entry (the escape-after-distress
+  shape that plain withdrawal doesn't have). Will sharpen once TRAP/TRAC capture
+  (§5.2) exists — that's a direct signal instead of an inferred one.
+- **Rumination** *(proxy)* — flat-mood logs that carry a free-text note. Coarse
+  today; near-term we can just ask ("stuck in your head?") when the signal is
+  ambiguous, and longer-term note content itself is a much stronger signal.
+
+Scores are independent 0–100 severities, not normalized to sum to 100, because
+loops co-occur. The assessment surfaces a primary loop, and a secondary loop
+when the runner-up is close behind (within 15 points) — mixed presentations are
+the common case, not the exception. Every tailored path keeps the other three
+loops' tools one tap away; tailoring reorders emphasis, it never hides the rest.
+
+---
+
 ## 3. Core dimensions we capture (the heart of everything)
 
 Every activity log captures mood as a **2D point** plus two BA ratings. This is
@@ -334,3 +382,7 @@ quests, values/goals (ACT) layer, micro-psychoeducation.
   is what distinguishes the numb vs. drowning poles. Optional emotion-word tag.
 - 2026-06-26 — Insights are framed as **experiments**, never verdicts.
 - 2026-06-26 — Safety routing is **MVP**, not later.
+- 2026-07-06 — Added the **four-loop model** (§2.5): withdrawal, overwhelm,
+  avoidance, rumination. The diagnostic tree infers loop *weights*, not a
+  single label, mostly from data already collected. First loop-weighted
+  insight card ships confirm/reject only — tailored per-loop flows are next.

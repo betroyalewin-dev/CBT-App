@@ -44,6 +44,14 @@
 .insight-foot {
   font-size: 0.8rem;
 }
+.insight-tag--loop {
+  background: var(--accent-wash);
+  color: color-mix(in oklch, var(--accent) 72%, black);
+}
+.loop-card-actions {
+  display: flex;
+  gap: var(--s-3);
+}
 .insights-empty {
   display: flex;
   flex-direction: column;
