@@ -5,7 +5,6 @@ import { TrendStrip } from "../components/TrendStrip";
 import { computeDashboard } from "../domain/dashboard";
 import { computeStreak } from "../domain/streak";
 import { QUADRANT_META } from "../domain/mood";
-import { PROFILES } from "../domain/profiles";
 import { GrowthMeter } from "../components/GrowthMeter";
 import { OneSmallThing } from "../components/OneSmallThing";
 import { bestBets } from "../domain/ledger";
@@ -23,7 +22,6 @@ export function TodayScreen() {
   const { state } = useStore();
   const dash = computeDashboard(state.logs);
   const streak = computeStreak(state.logs);
-  const profile = state.profile ? PROFILES[state.profile] : null;
   const meta = QUADRANT_META[dash.quadrant];
 
   // When the reading calls for "one small win", point at the user's own data
@@ -71,8 +69,8 @@ export function TodayScreen() {
             <div className="board-reading">
               <h2>Let's get your first read</h2>
               <p className="muted board-empty-note">
-                Your dot appears once you've logged. It's just your own mood
-                taps, smoothed — nothing mysterious.
+                Your dot appears after your first log — just your own taps,
+                smoothed.
               </p>
             </div>
           )}
@@ -86,14 +84,6 @@ export function TodayScreen() {
       </section>
 
       <OneSmallThing />
-
-      {profile && (
-        <aside className="today-profile">
-          <p className="eyebrow">Your starting picture</p>
-          <h3>{profile.title}</h3>
-          <p className="muted">{profile.blurb}</p>
-        </aside>
-      )}
 
       <Link className="btn btn--primary btn--block" to="/log">
         + Log a moment
@@ -133,20 +123,18 @@ function StreakNote({
     return (
       <div className="vital">
         <p className="vital-lead">Welcome back</p>
-        <p className="muted vital-note">
-          No streak lost — picking up exactly where you are.
-        </p>
+        <p className="muted vital-note">No streak lost.</p>
       </div>
     );
   }
   return (
     <div className="vital">
       <p className="vital-lead">{streak.days}-day rhythm</p>
-      <p className="muted vital-note">
-        {streak.graceUsed
-          ? "A missed day is fine — you're still going."
-          : "Gently, consistently."}
-      </p>
+      {streak.graceUsed && (
+        <p className="muted vital-note">
+          A missed day is fine — you're still going.
+        </p>
+      )}
     </div>
   );
 }
