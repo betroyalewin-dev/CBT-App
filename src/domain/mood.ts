@@ -60,21 +60,21 @@ export const QUADRANT_META: Record<
   thriving: {
     title: "Engaged & calm",
     advice:
-      "You've had reward without overload lately. Protect what's working — keep the activities that land on your calendar.",
+      "Protect what's working — keep the activities that land on your calendar.",
   },
   stressed: {
-    title: "Busy & rewarding — watch the load",
+    title: "Busy & rewarding",
     advice:
-      "Good things are happening, but the load is high. Keep the rewarding parts; shed one source of pressure before it tips over.",
+      "Keep the rewarding parts; shed one source of pressure before it tips over.",
   },
   numb: {
     title: "Calm, but nothing's landing",
     advice:
-      "You're not overwhelmed — things just aren't registering. Add one small win or a little novelty aimed at something you value.",
+      "Add one small win or a little novelty aimed at something you value.",
   },
   flat: {
     title: "Drowning & flat",
     advice:
-      "Heavy and unrewarding at once. Take one thing off your plate first, then add one tiny, soothing thing. Go slow — you're not behind.",
+      "Take one thing off your plate, then add one tiny, soothing thing. You're not behind.",
   },
 };

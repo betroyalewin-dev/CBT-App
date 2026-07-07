@@ -7,10 +7,6 @@
 .ost-head h2 {
   font-size: 1.12rem;
 }
-.ost-sub {
-  font-size: 0.85rem;
-  margin-top: 2px;
-}
 
 /* ── Live plan ─────────────────────────────────────────────────── */
 .ost-plan {
@@ -25,9 +21,6 @@
 }
 .ost-plan-meta {
   font-size: 0.88rem;
-}
-.ost-plan-note {
-  font-size: 0.8rem;
 }
 
 /* ── Forecast vs reality ───────────────────────────────────────── */

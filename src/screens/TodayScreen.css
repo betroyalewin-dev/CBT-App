@@ -125,19 +125,6 @@
   margin-top: 2px;
 }
 
-/* ── Profile footnote: hairline, no box ───────────────────────── */
-.today-profile {
-  border-top: 1px solid var(--line);
-  padding-top: var(--s-5);
-}
-.today-profile h3 {
-  margin: var(--s-1) 0;
-  font-size: 1.05rem;
-}
-.today-profile .muted {
-  font-size: 0.9rem;
-}
-
 /* Very narrow phones: the side-by-side pairs lose their room — stack them. */
 @media (max-width: 360px) {
   .board-read {

@@ -24,9 +24,6 @@ export function OneSmallThing() {
     <section className="panel ost" aria-label="One small thing">
       <header className="ost-head">
         <h2>One small thing</h2>
-        <p className="muted ost-sub">
-          More back than it takes — that's the whole move.
-        </p>
       </header>
 
       {plan ? (
@@ -42,7 +39,7 @@ export function OneSmallThing() {
               <p className="muted ost-bets-lead">
                 {outcome
                   ? "Want to line up the next one?"
-                  : "From your own logs, these have been giving the most back:"}
+                  : "What's been giving you the most back:"}
               </p>
               {bets.map((bet) => (
                 <BetRow
@@ -65,9 +62,8 @@ export function OneSmallThing() {
           ) : (
             !outcome && (
               <p className="muted ost-teach">
-                Log a few different activities — not just mood checks — and
-                your best bets will show up here: the things that give you the
-                most back for the least they take out of you.
+                Log a few different activities — not just moods — and your best
+                bets will show up here.
               </p>
             )
           )}
@@ -88,8 +84,7 @@ function PlanCard({
     <div className="ost-plan">
       <p className="ost-plan-what">{plan.activityLabel}</p>
       <p className="muted ost-plan-meta">
-        Planned {planAge(plan)} · you predicted {plan.predictedPleasure}/10
-        enjoyment
+        Planned {planAge(plan)} · predicted {plan.predictedPleasure}/10
       </p>
       <div className="ost-actions">
         <Link className="btn btn--primary" to="/log">
@@ -99,7 +94,6 @@ function PlanCard({
           Let it go
         </button>
       </div>
-      <p className="muted ost-plan-note">Plans are allowed to move.</p>
     </div>
   );
 }
@@ -111,10 +105,10 @@ function OutcomeNote({
 }) {
   const read =
     outcome.delta >= 1
-      ? "Better than your forecast. Depression tends to under-predict — your own numbers just showed it."
+      ? "Better than your forecast — depression tends to under-predict."
       : outcome.delta <= -1
-        ? "Less than hoped. That's honest data, not a failure — it narrows the search."
-        : "Right about what you expected. A forecast you can trust counts too.";
+        ? "Less than hoped — honest data, not a failure."
+        : "About what you expected — a forecast you can trust counts too.";
   return (
     <div
       className={`ost-outcome ${outcome.delta >= 1 ? "ost-outcome--beat" : ""}`}
