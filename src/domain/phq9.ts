@@ -32,7 +32,7 @@ export function phq9Severity(total: number): PHQ9Severity {
  * Score a completed PHQ-9. `items` must be 9 values, each 0–3.
  * Item 9 (index 8) is self-harm: any non-zero answer raises the safety flag.
  */
-export function scorePHQ9(items: number[]): PHQ9Result {
+export function scorePHQ9(items: number[], at: number = Date.now()): PHQ9Result {
   if (items.length !== 9) {
     throw new Error(`PHQ-9 needs exactly 9 items, got ${items.length}`);
   }
@@ -49,5 +49,6 @@ export function scorePHQ9(items: number[]): PHQ9Result {
     severity: phq9Severity(total),
     item9,
     safetyFlag: item9 > 0,
+    at,
   };
 }

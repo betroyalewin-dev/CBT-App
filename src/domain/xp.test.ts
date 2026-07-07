@@ -16,6 +16,7 @@ function phq(total: number): PHQ9Result {
     severity: "mild",
     item9: 0,
     safetyFlag: false,
+    at: 0,
   };
 }
 

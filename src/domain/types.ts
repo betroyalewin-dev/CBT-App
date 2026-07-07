@@ -44,6 +44,8 @@ export interface PHQ9Result {
   item9: number;
   /** True when item 9 > 0 — triggers the safety flow. */
   safetyFlag: boolean;
+  /** When this check-in was taken (epoch ms) — drives the re-check schedule. */
+  at: number;
 }
 
 export type PHQ9Severity =

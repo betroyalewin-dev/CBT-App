@@ -6,6 +6,7 @@ import { TodayScreen } from "./screens/TodayScreen";
 import { LogScreen } from "./screens/LogScreen";
 import { InsightsScreen } from "./screens/InsightsScreen";
 import { SafetyScreen } from "./screens/SafetyScreen";
+import { RecheckScreen } from "./screens/RecheckScreen";
 
 function Routed() {
   const { state } = useStore();
@@ -25,6 +26,7 @@ function Routed() {
         <Route path="/log" element={<LogScreen />} />
         <Route path="/insights" element={<InsightsScreen />} />
         <Route path="/safety" element={<SafetyScreen />} />
+        <Route path="/recheck" element={<RecheckScreen />} />
         <Route path="*" element={<Navigate to="/today" replace />} />
       </Route>
     </Routes>
