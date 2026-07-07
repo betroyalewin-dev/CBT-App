@@ -6,22 +6,29 @@ interface Props {
   axis: AxisScores;
   quadrant: QuadrantKey;
   hasData: boolean;
+  /**
+   * Map mode: washes, axes and the dot only. Use when the quadrant name and
+   * values are rendered as real text next to the pad — the pad becomes a
+   * compact position map instead of a full labeled chart.
+   */
+  compact?: boolean;
 }
 
-const QUADRANT_LABELS: { key: QuadrantKey; label: string; pos: string }[] = [
-  { key: "thriving", label: "Engaged · calm", pos: "tr" },
-  { key: "stressed", label: "Busy · rewarding", pos: "tl" },
-  { key: "numb", label: "Calm · flat", pos: "br" },
-  { key: "flat", label: "Drowning · flat", pos: "bl" },
+// x = reward (left: nothing lands … right: things land)
+// y = stress (top: overloaded … bottom: calm)
+const QUADS: { key: QuadrantKey; pos: "tl" | "tr" | "bl" | "br"; label: string }[] = [
+  { key: "flat", pos: "tl", label: "Drowning · flat" },
+  { key: "stressed", pos: "tr", label: "Busy · rewarding" },
+  { key: "numb", pos: "bl", label: "Calm · flat" },
+  { key: "thriving", pos: "br", label: "Engaged · calm" },
 ];
 
-export function QuadrantPad({ axis, quadrant, hasData }: Props) {
-  // x = reward (0 left … 100 right); y = stress (0 bottom calm … 100 top overloaded)
+export function QuadrantPad({ axis, quadrant, hasData, compact = false }: Props) {
   const x = axis.reward;
   const y = 100 - axis.stress;
 
   return (
-    <div className="qp">
+    <div className={compact ? "qp qp--compact" : "qp"}>
       <div
         className="qp-pad"
         role="img"
@@ -31,29 +38,39 @@ export function QuadrantPad({ axis, quadrant, hasData }: Props) {
             : "Not enough data yet — log a few times to see your position."
         }
       >
-        <span className="qp-q qp-q--tr" aria-hidden />
-        <span className="qp-q qp-q--tl" aria-hidden />
-        <span className="qp-q qp-q--br" aria-hidden />
-        <span className="qp-q qp-q--bl" aria-hidden />
+        {QUADS.map((q) => (
+          <span
+            key={q.key}
+            className={`qp-q qp-q--${q.pos} qp-q--${q.key} ${
+              hasData && q.key === quadrant ? "is-current" : ""
+            }`}
+            aria-hidden
+          />
+        ))}
 
         <span className="qp-axis qp-axis--v" aria-hidden />
         <span className="qp-axis qp-axis--h" aria-hidden />
 
-        {QUADRANT_LABELS.map((q) => (
-          <span
-            key={q.key}
-            className={`qp-label qp-label--${q.pos} ${
-              q.key === quadrant && hasData ? "is-current" : ""
-            }`}
-          >
-            {q.label}
-          </span>
-        ))}
+        {!compact &&
+          QUADS.map((q) => (
+            <span
+              key={q.key}
+              className={`qp-label qp-label--${q.pos} ${
+                q.key === quadrant && hasData ? "is-current" : ""
+              }`}
+            >
+              {q.label}
+            </span>
+          ))}
 
-        <span className="qp-edge qp-edge--top">overloaded</span>
-        <span className="qp-edge qp-edge--bottom">calm</span>
-        <span className="qp-edge qp-edge--left">nothing lands</span>
-        <span className="qp-edge qp-edge--right">things land</span>
+        {!compact && (
+          <>
+            <span className="qp-edge qp-edge--top">overloaded</span>
+            <span className="qp-edge qp-edge--bottom">calm</span>
+            <span className="qp-edge qp-edge--left">nothing lands</span>
+            <span className="qp-edge qp-edge--right">things land</span>
+          </>
+        )}
 
         {hasData && (
           <span

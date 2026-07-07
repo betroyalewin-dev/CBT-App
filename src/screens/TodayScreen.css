@@ -2,52 +2,175 @@
   margin-top: var(--s-1);
 }
 
-.streak {
-  border-radius: var(--r-card);
-  padding: var(--s-3) var(--s-4);
-  font-size: 0.95rem;
-  border: 1px solid var(--line);
-  background: var(--surface);
-}
-.streak--active {
-  background: var(--primary-wash);
-  border-color: color-mix(in oklch, var(--primary) 30%, var(--line));
-}
-.streak--back {
-  background: var(--accent-wash);
-  border-color: color-mix(in oklch, var(--accent) 30%, var(--line));
+/* ── The board: map + reading + advice + trend in one panel ───── */
+.today-board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-5) var(--s-4);
 }
 
-.today-advice {
-  border-radius: var(--r-control);
-  padding: var(--s-4);
-  background: var(--surface-2);
+.board-read {
+  display: flex;
+  gap: var(--s-4);
+}
+.board-read .qp {
+  flex: 0 1 9.5rem;
+  min-width: 6.75rem;
+  align-self: flex-start;
+}
+.board-reading {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.board-reading h2 {
+  font-size: 1.12rem;
+  line-height: 1.25;
+}
+.board-empty-note {
+  font-size: 0.9rem;
+}
+.board-sample {
+  font-size: 0.78rem;
+}
+
+.axis-meters {
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
 }
-.today-advice h2 {
-  font-size: 1.2rem;
+.axis-meter-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
 }
-.today-advice--thriving {
-  background: var(--q-thriving-wash);
-}
-.today-advice--stressed {
-  background: var(--q-stressed-wash);
-}
-.today-advice--numb {
-  background: var(--q-numb-wash);
-}
-.today-advice--flat {
-  background: var(--q-flat-wash);
-}
-.today-advice .btn {
-  align-self: flex-start;
-  margin-top: var(--s-2);
-}
-.today-sample {
+.axis-meter-num {
+  color: var(--ink);
+  font-weight: 600;
   font-size: 0.8rem;
+}
+.axis-meter-track {
+  height: 6px;
+  margin-top: 3px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.axis-meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--meter, var(--primary));
+  transform-origin: left;
+  animation: meter-grow 600ms var(--ease-out) both;
+}
+.board-reading--thriving {
+  --meter: var(--q-thriving);
+}
+.board-reading--stressed {
+  --meter: var(--q-stressed);
+}
+.board-reading--numb {
+  --meter: var(--q-numb);
+}
+.board-reading--flat {
+  --meter: var(--q-flat);
+}
+
+.board-advice {
+  font-size: 0.95rem;
+  max-width: 60ch;
+}
+
+.board-trend {
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-4);
+}
+.board-trend h3 {
+  font-size: 1rem;
+}
+
+/* ── Vitals: rhythm + growth, side by side, no card chrome ────── */
+.today-vitals {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding-inline: var(--s-2);
+}
+.today-vitals > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.today-vitals > .growth {
+  flex: 1.2 1 0;
+}
+.today-vitals > * + * {
+  border-left: 1px solid var(--line);
+  padding-left: var(--s-4);
+}
+
+.vital-lead {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+}
+.vital-note {
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+/* ── Profile footnote: hairline, no box ───────────────────────── */
+.today-profile {
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-5);
 }
 .today-profile h3 {
   margin: var(--s-1) 0;
+  font-size: 1.05rem;
+}
+.today-profile .muted {
+  font-size: 0.9rem;
+}
+
+/* Very narrow phones: the side-by-side pairs lose their room — stack them. */
+@media (max-width: 360px) {
+  .board-read {
+    flex-direction: column;
+  }
+  .board-read .qp {
+    flex: none;
+    width: 10rem;
+  }
+  .today-vitals {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--s-3);
+  }
+  .today-vitals > .growth {
+    flex: none;
+  }
+  .today-vitals > * + * {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-3);
+  }
+}
+
+@keyframes meter-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .axis-meter-fill {
+    animation: none;
+  }
 }
