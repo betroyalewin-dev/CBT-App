@@ -25,7 +25,7 @@ export interface ActivityLog {
   mood: MoodPoint;
   pleasure: number; // 0–10
   mastery: number; // 0–10
-  /** Activation cost: 1 light · 2 medium · 3 heavy. Optional — never blocks the fast path. */
+  /** Self-rated effort/activation cost, 0–10. Optional — never blocks the fast path. */
   effort?: number;
   emotionTag?: string;
   planned: boolean;

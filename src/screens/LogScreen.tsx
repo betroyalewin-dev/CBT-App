@@ -7,12 +7,6 @@ import { MOOD_CHECK_LABEL } from "../domain/ledger";
 import type { MoodPoint } from "../domain/types";
 import "./LogScreen.css";
 
-const EFFORT_CHOICES = [
-  { value: 1, label: "Light" },
-  { value: 2, label: "Medium" },
-  { value: 3, label: "Heavy" },
-];
-
 export function LogScreen() {
   const { state, dispatch } = useStore();
   const navigate = useNavigate();
@@ -26,7 +20,7 @@ export function LogScreen() {
   const [mood, setMood] = useState<MoodPoint | null>(null);
   const [pleasure, setPleasure] = useState(lastLog?.pleasure ?? 5);
   const [mastery, setMastery] = useState(lastLog?.mastery ?? 5);
-  const [effort, setEffort] = useState<number | null>(null);
+  const [effort, setEffort] = useState(lastLog?.effort ?? 5);
   const [showDetail, setShowDetail] = useState(false);
   const [note, setNote] = useState("");
 
@@ -49,7 +43,7 @@ export function LogScreen() {
         mood,
         pleasure,
         mastery,
-        effort: effort ?? undefined,
+        effort,
         planned: false, // the store upgrades this when the log fulfils the plan
         note: note.trim() || undefined,
       },
@@ -124,24 +118,12 @@ export function LogScreen() {
           value={mastery}
           onChange={setMastery}
         />
-        <div className="stack-sm">
-          <span className="eyebrow">How much did it take out of you?</span>
-          <div className="chiprow">
-            {EFFORT_CHOICES.map((c) => (
-              <button
-                key={c.value}
-                type="button"
-                className={`pill ${effort === c.value ? "is-selected" : ""}`}
-                aria-pressed={effort === c.value}
-                onClick={() =>
-                  setEffort(effort === c.value ? null : c.value)
-                }
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <PMSlider
+          label="Effort"
+          hint="your effort level"
+          value={effort}
+          onChange={setEffort}
+        />
       </section>
 
       {showDetail ? (

@@ -21,14 +21,14 @@ export const MIN_ACTIVITY_LOGS = 2;
  */
 const BET_MARGIN = 3;
 
-/** Points of "worth" one step of effort costs: heavy (3) loses 15 vs light (1). */
-const EFFORT_DISCOUNT = 7.5;
+/** Points of "worth" one step of effort (0–10) costs: max effort loses 15 vs none. */
+const EFFORT_DISCOUNT = 1.5;
 
 export type EffortWord = "light" | "medium" | "heavy";
 
 export function effortWord(avgEffort: number): EffortWord {
-  if (avgEffort < 1.5) return "light";
-  if (avgEffort < 2.5) return "medium";
+  if (avgEffort < 4) return "light";
+  if (avgEffort < 7) return "medium";
   return "heavy";
 }
 
@@ -41,7 +41,7 @@ export interface ActivityStat {
   moodLift: number;
   avgPleasure: number;
   avgMastery: number;
-  /** Mean rated effort 1–3, or null when no log of this activity was rated. */
+  /** Mean rated effort 0–10, or null when no log of this activity was rated. */
   avgEffort: number | null;
   /** benefit discounted by effort — the ranking score. */
   worth: number;
@@ -86,7 +86,7 @@ export function activityLedger(
     const rated = group.filter((l) => l.effort !== undefined);
     const avgEffort = rated.length ? mean(rated.map((l) => l.effort!)) : null;
     const worth =
-      benefit - (avgEffort === null ? 0 : (avgEffort - 1) * EFFORT_DISCOUNT);
+      benefit - (avgEffort === null ? 0 : avgEffort * EFFORT_DISCOUNT);
     stats.push({
       label,
       n: group.length,
