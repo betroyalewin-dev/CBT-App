@@ -42,6 +42,11 @@ export function TodayScreen() {
         <h1>Where you are</h1>
       </header>
 
+      <section className="today-vitals" aria-label="Your rhythm and growth">
+        <StreakNote streak={streak} />
+        {state.logs.length > 0 && <GrowthMeter xp={state.xp} />}
+      </section>
+
       <section className="panel today-board">
         <div className="board-read">
           <QuadrantPad
@@ -54,7 +59,7 @@ export function TodayScreen() {
             <div className={`board-reading board-reading--${dash.quadrant}`}>
               <h2>{meta.title}</h2>
               <div className="axis-meters">
-                <AxisMeter label="Things landing" value={dash.axis.reward} />
+                <AxisMeter label="Reward" value={dash.axis.reward} />
                 <AxisMeter label="Load" value={dash.axis.stress} />
               </div>
               <p className="muted board-sample">
@@ -81,11 +86,6 @@ export function TodayScreen() {
       </section>
 
       <OneSmallThing />
-
-      <section className="today-vitals" aria-label="Your rhythm and growth">
-        <StreakNote streak={streak} />
-        {state.logs.length > 0 && <GrowthMeter xp={state.xp} />}
-      </section>
 
       {profile && (
         <aside className="today-profile">
