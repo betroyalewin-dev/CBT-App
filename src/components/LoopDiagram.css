@@ -1,0 +1,115 @@
+.dl {
+  display: flex;
+  justify-content: center;
+  /* shared tempo so the stages and arrows light in lockstep */
+  --period: 5.4s;
+  --intro: 1.5s;
+  /* cool, calm "negative cycle" palette — never alarm-red */
+  --dl-stroke: color-mix(in oklch, var(--q-numb) 55%, var(--line));
+  --dl-stroke-lit: var(--q-numb);
+  --dl-fill: color-mix(in oklch, var(--q-numb) 10%, var(--surface));
+  --dl-fill-lit: color-mix(in oklch, var(--q-numb) 24%, var(--surface));
+  --dl-glow: color-mix(in oklch, var(--q-numb) 55%, transparent);
+}
+.dl svg {
+  width: 100%;
+  max-width: 260px;
+}
+
+.dl-arrowhead {
+  fill: var(--q-numb);
+}
+
+/* ── Stage cards ─────────────────────────────────────────────── */
+.dl-card {
+  opacity: 0;
+  transform-box: fill-box;
+  animation: dl-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--enter, 0) * 140ms);
+}
+.dl-box {
+  fill: var(--dl-fill);
+  stroke: var(--dl-stroke);
+  stroke-width: 1.5;
+  animation: dl-lit var(--period) ease-in-out
+    calc(var(--intro) + var(--phase, 0) * var(--period)) infinite;
+}
+.dl-label {
+  fill: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ── Flow arrows + connector text ────────────────────────────── */
+.dl-flow {
+  stroke: var(--q-numb);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.5;
+  animation: dl-flow-lit var(--period) ease-in-out
+    calc(var(--intro) + var(--phase, 0) * var(--period)) infinite;
+}
+.dl-conn {
+  fill: var(--ink-muted);
+  font-family: var(--font-body);
+  font-size: 10.5px;
+}
+
+/* ── Keyframes ───────────────────────────────────────────────── */
+@keyframes dl-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes dl-lit {
+  0%,
+  26%,
+  100% {
+    fill: var(--dl-fill);
+    stroke: var(--dl-stroke);
+    stroke-width: 1.5;
+    filter: none;
+  }
+  8% {
+    fill: var(--dl-fill-lit);
+    stroke: var(--dl-stroke-lit);
+    stroke-width: 2.4;
+    filter: drop-shadow(0 0 7px var(--dl-glow));
+  }
+}
+@keyframes dl-flow-lit {
+  0%,
+  32%,
+  100% {
+    opacity: 0.5;
+    stroke-width: 2.2;
+    filter: none;
+  }
+  8% {
+    opacity: 1;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 5px var(--dl-glow));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dl-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .dl-box {
+    animation: none;
+  }
+  .dl-flow {
+    opacity: 0.7;
+    animation: none;
+  }
+}

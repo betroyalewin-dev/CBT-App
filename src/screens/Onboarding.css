@@ -157,56 +157,23 @@
   }
 }
 
-/* ── Welcome mark: a slow, living breath ─────────────────────── */
-@media (prefers-reduced-motion: no-preference) {
-  .onboard-mark {
-    animation: mark-breathe 6s ease-in-out infinite;
-  }
-  @keyframes mark-breathe {
-    0%,
-    100% {
-      transform: scale(1);
-      box-shadow: var(--shadow-2);
-    }
-    50% {
-      transform: scale(1.045);
-      box-shadow: var(--shadow-2),
-        0 0 32px color-mix(in oklch, var(--accent) 35%, transparent);
-    }
-  }
+/* ── Explanation pages (the loop + how BA breaks it) ─────────── */
+.onboard-explain {
+  padding-top: var(--s-3);
+  gap: var(--s-5);
 }
-
-.onboard-welcome {
-  padding-top: var(--s-5);
+.onboard-explain p {
+  font-size: 1.02rem;
+  line-height: 1.6;
 }
-.onboard-mark {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  background: radial-gradient(circle at 32% 30%, var(--accent), var(--primary) 70%);
-  box-shadow: var(--shadow-2);
+.onboard-explain .onboard-step-head {
+  margin-bottom: calc(-1 * var(--s-1));
 }
-.onboard-welcome h1 {
-  font-size: clamp(1.9rem, 1.4rem + 2.5vw, 2.6rem);
-}
-.onboard-promises {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-}
-.onboard-promises li {
-  position: relative;
-  padding-left: 1.6rem;
-  color: var(--ink);
-}
-.onboard-promises li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--primary);
-  font-weight: 700;
+.onboard-trust {
+  font-size: 0.9rem;
+  margin-top: var(--s-1);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
 }
 
 .onboard-step-head h1 {
@@ -220,6 +187,61 @@
   margin-top: var(--s-3);
 }
 
+/* ── One-question-per-page (PHQ-9 + axis) ────────────────────── */
+.onboard-qpage {
+  gap: var(--s-5);
+  padding-top: var(--s-5);
+}
+.onboard-qhead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+.onboard-qsection {
+  font-weight: 600;
+  color: var(--primary-strong);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.onboard-qcontext {
+  font-size: 0.95rem;
+}
+
+.likert-solo .likert {
+  gap: var(--s-5);
+}
+.likert-solo .likert-prompt {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 1.15rem + 1.5vw, 1.9rem);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  margin-bottom: var(--s-5);
+}
+.likert-solo .likert-opts {
+  gap: var(--s-3);
+}
+.likert-solo .likert-opt {
+  min-height: 60px;
+  font-size: 1.05rem;
+  padding: 0 var(--s-5);
+  transition: background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+/* press feedback so the chosen answer registers before the page turns */
+.likert-solo .likert-opt:active {
+  transform: scale(0.985);
+}
+.likert-solo.is-locked {
+  pointer-events: none;
+}
+.likert-solo.is-locked .likert-opt.is-selected {
+  transform: scale(1.012);
+}
+
 .onboard-profile h1 {
   font-size: clamp(1.7rem, 1.3rem + 2vw, 2.3rem);
 }
@@ -231,13 +253,67 @@
   gap: var(--s-2);
 }
 
-.onboard-loop {
-  padding-top: var(--s-3);
-  align-items: stretch;
+/* ── Seed activities: what lifts you / what drains you ───────── */
+.seed-bucket {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
 }
-.onboard-loop-foot {
-  text-align: center;
-  text-wrap: pretty;
+.seed-bucket--drain {
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+.seed-bucket-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.seed-bucket-label {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.seed-bucket-hint {
+  font-size: 0.9rem;
+}
+
+.seed-add {
+  display: flex;
+  gap: var(--s-2);
+}
+.seed-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  padding: 0 var(--s-3);
+}
+.seed-input::placeholder {
+  color: var(--ink-muted);
+}
+.seed-add-btn {
+  flex: none;
+  min-height: 48px;
+}
+
+.seed-chip {
+  gap: var(--s-2);
+}
+.seed-chip-x {
+  font-size: 1.15rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+/* the "drains you" picks read in a cooler, distinct tone from the lifts */
+.seed-bucket--drain .seed-chip.is-selected {
+  background: var(--q-numb-wash);
+  border-color: var(--q-numb);
+  color: color-mix(in oklch, var(--q-numb) 70%, var(--ink));
+}
+.seed-suggest {
+  font-weight: 500;
+  color: var(--ink-muted);
 }
 
 .onboard-safety-lead {

@@ -10,6 +10,9 @@
   font-weight: 600;
   padding: 0;
   line-height: 1.4;
+  /* A <legend> is not a flex item, so the fieldset's `gap` never applies to it.
+     An explicit margin is the only reliable separator from the options below. */
+  margin-bottom: var(--s-3);
 }
 .likert--sensitive .likert-prompt::after {
   content: " You're not alone with this.";
