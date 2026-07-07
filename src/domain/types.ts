@@ -4,6 +4,7 @@
 import type { Experiment } from "./experiments";
 import type { XpAward } from "./xp";
 import type { LoopKey } from "./loops";
+import type { ActivityPlan } from "./plan";
 
 /** A point on the valence×arousal circumplex. Both axes are −5…+5. */
 export interface MoodPoint {
@@ -24,9 +25,12 @@ export interface ActivityLog {
   mood: MoodPoint;
   pleasure: number; // 0–10
   mastery: number; // 0–10
+  /** Activation cost: 1 light · 2 medium · 3 heavy. Optional — never blocks the fast path. */
+  effort?: number;
   emotionTag?: string;
   planned: boolean;
-  anticipated?: { mood: MoodPoint; pleasure: number; mastery: number };
+  /** Forecast made when the activity was planned. Only pleasure is always predicted. */
+  anticipated?: { pleasure: number; mood?: MoodPoint; mastery?: number };
   context?: { who?: string; where?: string; energy?: number; sleep?: number };
   note?: string;
 }
@@ -93,6 +97,8 @@ export interface AppState {
   experiments: Experiment[];
   /** User's confirm/reject response to the loop hypothesis card, per loop (see domain/loops.ts). */
   loopFeedback: Partial<Record<LoopKey, { response: "confirmed" | "rejected"; at: number }>>;
+  /** The one currently planned activity + its forecast (see domain/plan.ts). */
+  plan: ActivityPlan | null;
   /** Transient: the most recent XP award, for the reward animation. Not persisted. */
   lastAward?: XpAward | null;
 }

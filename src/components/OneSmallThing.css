@@ -1,0 +1,110 @@
+.ost {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-5) var(--s-4);
+}
+.ost-head h2 {
+  font-size: 1.12rem;
+}
+.ost-sub {
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+/* ── Live plan ─────────────────────────────────────────────────── */
+.ost-plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.ost-plan-what {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+.ost-plan-meta {
+  font-size: 0.88rem;
+}
+.ost-plan-note {
+  font-size: 0.8rem;
+}
+
+/* ── Forecast vs reality ───────────────────────────────────────── */
+.ost-outcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+}
+.ost-outcome--beat {
+  background: var(--accent-wash);
+}
+.ost-outcome--beat .ost-outcome-read {
+  color: color-mix(in oklch, var(--accent) 45%, var(--ink));
+}
+.ost-outcome-line {
+  font-size: 0.95rem;
+}
+.ost-outcome-read {
+  font-size: 0.85rem;
+}
+
+/* ── Best bets ─────────────────────────────────────────────────── */
+.ost-bets {
+  display: flex;
+  flex-direction: column;
+}
+.ost-bets-lead {
+  font-size: 0.85rem;
+  padding-bottom: var(--s-3);
+}
+.ost-bet {
+  padding-block: var(--s-3);
+  border-top: 1px solid var(--line);
+}
+.ost-bet:last-child {
+  padding-bottom: 0;
+}
+.ost-bet-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.ost-bet-body {
+  flex: 1;
+  min-width: 0;
+}
+.ost-bet-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+.ost-bet-meta {
+  font-size: 0.82rem;
+  margin-top: 1px;
+}
+.ost-bet-btn {
+  flex: none;
+  min-height: 40px;
+  padding-inline: var(--s-4);
+  font-size: 0.9rem;
+}
+.ost-predict {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding-top: var(--s-3);
+}
+
+.ost-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-1);
+}
+.ost-teach {
+  font-size: 0.9rem;
+}

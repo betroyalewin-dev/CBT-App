@@ -3,25 +3,37 @@ import { useNavigate } from "react-router-dom";
 import { useStore, newId } from "../store/store";
 import { MoodGrid } from "../components/MoodGrid";
 import { PMSlider } from "../components/PMSlider";
+import { MOOD_CHECK_LABEL } from "../domain/ledger";
 import type { MoodPoint } from "../domain/types";
 import "./LogScreen.css";
+
+const EFFORT_CHOICES = [
+  { value: 1, label: "Light" },
+  { value: 2, label: "Medium" },
+  { value: 3, label: "Heavy" },
+];
 
 export function LogScreen() {
   const { state, dispatch } = useStore();
   const navigate = useNavigate();
 
   const lastLog = state.logs[state.logs.length - 1];
-  const [activity, setActivity] = useState<string>("Mood check");
+  // A live plan pre-selects its activity — logging it closes the loop.
+  const [activity, setActivity] = useState<string>(
+    state.plan?.activityLabel ?? MOOD_CHECK_LABEL,
+  );
   const [customActivity, setCustomActivity] = useState("");
   const [mood, setMood] = useState<MoodPoint | null>(null);
   const [pleasure, setPleasure] = useState(lastLog?.pleasure ?? 5);
   const [mastery, setMastery] = useState(lastLog?.mastery ?? 5);
+  const [effort, setEffort] = useState<number | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [note, setNote] = useState("");
 
-  const choices = ["Mood check", ...state.activities];
+  const choices = [MOOD_CHECK_LABEL, ...state.activities];
   const label = activity === "__custom" ? customActivity.trim() : activity;
   const canSave = mood !== null && label.length > 0;
+  const fulfillsPlan = state.plan !== null && label === state.plan.activityLabel;
 
   function save() {
     if (!mood || !label) return;
@@ -37,7 +49,8 @@ export function LogScreen() {
         mood,
         pleasure,
         mastery,
-        planned: false,
+        effort: effort ?? undefined,
+        planned: false, // the store upgrades this when the log fulfils the plan
         note: note.trim() || undefined,
       },
     });
@@ -83,6 +96,13 @@ export function LogScreen() {
             onChange={(e) => setCustomActivity(e.target.value)}
           />
         )}
+        {fulfillsPlan && state.plan && (
+          <p className="muted log-plan-hint">
+            You planned this one — predicted enjoyment{" "}
+            {state.plan.predictedPleasure}/10. No pressure either way; honest
+            numbers are the whole point.
+          </p>
+        )}
       </section>
 
       <section className="stack-sm">
@@ -104,6 +124,24 @@ export function LogScreen() {
           value={mastery}
           onChange={setMastery}
         />
+        <div className="stack-sm">
+          <span className="eyebrow">How much did it take out of you?</span>
+          <div className="chiprow">
+            {EFFORT_CHOICES.map((c) => (
+              <button
+                key={c.value}
+                type="button"
+                className={`pill ${effort === c.value ? "is-selected" : ""}`}
+                aria-pressed={effort === c.value}
+                onClick={() =>
+                  setEffort(effort === c.value ? null : c.value)
+                }
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </section>
 
       {showDetail ? (
