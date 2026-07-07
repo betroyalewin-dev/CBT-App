@@ -1,14 +1,16 @@
 import { useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useStore } from "../store/store";
 import { generateInsights, type Insight } from "../domain/insights";
 import { assessLoops, LOOP_META, type LoopKey } from "../domain/loops";
 import { DAY_MS } from "../domain/dashboard";
 import { ExperimentsPanel } from "../components/ExperimentsPanel";
+import { LockedTeaser } from "../components/LockedTeaser";
 import "./InsightsScreen.css";
 
 /** Don't re-ask about the same loop for a few days after a response. */
 const LOOP_COOLDOWN_MS = 3 * DAY_MS;
+/** Matches the minimum logs generateInsights/assessLoops need to produce anything. */
+const INSIGHTS_MIN_LOGS = 3;
 
 export function InsightsScreen() {
   const { state, dispatch } = useStore();
@@ -37,50 +39,42 @@ export function InsightsScreen() {
     dispatch({ type: "respondToLoop", key, response });
   }
 
+  const logsToGo = Math.max(0, INSIGHTS_MIN_LOGS - state.logs.length);
+
   return (
     <div className="stack insights">
       <header>
         <h1>Patterns worth testing</h1>
-        <p className="muted">
-          These are hunches from your own data — never verdicts. Early data is
-          noisy and confounded, so we hand you a hypothesis, not a prescription.
-        </p>
       </header>
 
-      {showLoopCard && primary && (
-        <LoopCard loopKey={primary} onRespond={respondToLoop} />
-      )}
+      <section className="stack">
+        <h2>Insights</h2>
+        {logsToGo > 0 ? (
+          <LockedTeaser
+            title="Locked"
+            need={`${logsToGo} more ${logsToGo === 1 ? "log" : "logs"} to go.`}
+          />
+        ) : (
+          <>
+            {showLoopCard && primary && (
+              <LoopCard loopKey={primary} onRespond={respondToLoop} />
+            )}
+            {insights.length === 0 ? (
+              <div className="panel insights-empty">
+                <p className="muted">Nothing stands out yet.</p>
+              </div>
+            ) : (
+              insights.map((ins) => (
+                <InsightCard key={ins.id} insight={ins} onStart={startExperiment} />
+              ))
+            )}
+          </>
+        )}
+      </section>
 
       <div ref={expRef}>
         <ExperimentsPanel key={seed ?? "none"} seedLabel={seed} />
       </div>
-
-      {state.logs.length < 3 ? (
-        <div className="panel insights-empty">
-          <h3>A little more data first</h3>
-          <p className="muted">
-            After a handful of logs, real patterns start to show. Keep going —
-            even short check-ins count.
-          </p>
-          <Link className="btn btn--primary" to="/log">
-            Log a moment
-          </Link>
-        </div>
-      ) : insights.length === 0 ? (
-        <div className="panel insights-empty">
-          <h3>Nothing stands out yet</h3>
-          <p className="muted">
-            Your data so far is fairly even — no single thing is clearly moving
-            the needle. That's honest information too.
-          </p>
-        </div>
-      ) : (
-        <div className="stack">
-          {insights.map((ins) => (
-            <InsightCard key={ins.id} insight={ins} onStart={startExperiment} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -157,10 +151,6 @@ function InsightCard({
           >
             Set up this experiment
           </button>
-          <p className="muted insight-foot">
-            We'll track it for a couple of weeks and read it back as a hunch — the
-            gap between what you expect and what happens is the whole point.
-          </p>
         </div>
       ) : (
         <button className="btn btn--ghost" onClick={() => setOpen(true)}>

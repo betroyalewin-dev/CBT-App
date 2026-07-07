@@ -10,6 +10,7 @@ import {
   type ExperimentMetric,
 } from "../domain/experiments";
 import { XP } from "../domain/xp";
+import { LockedTeaser } from "./LockedTeaser";
 import "./ExperimentsPanel.css";
 
 const METRICS: ExperimentMetric[] = ["mood", "mastery", "pleasure"];
@@ -21,15 +22,11 @@ export function ExperimentsPanel({ seedLabel }: { seedLabel?: string }) {
   return (
     <section className="stack experiments">
       <header className="experiments-head">
-        <h2>Your experiments</h2>
-        <p className="muted">
-          Test one thing at a time — "does this actually move my mood?" — and let
-          your own data answer over a couple of weeks.
-        </p>
+        <h2>Experiments</h2>
       </header>
 
       {!accl.ready ? (
-        <LockedTeaser accl={accl} />
+        <ExperimentsLocked accl={accl} />
       ) : (
         <ReadyState seedLabel={seedLabel} />
       )}
@@ -37,30 +34,14 @@ export function ExperimentsPanel({ seedLabel }: { seedLabel?: string }) {
   );
 }
 
-function LockedTeaser({ accl }: { accl: ReturnType<typeof acclimation> }) {
+function ExperimentsLocked({ accl }: { accl: ReturnType<typeof acclimation> }) {
   const need: string[] = [];
   if (accl.daysToGo > 0)
-    need.push(`${accl.daysToGo} more ${accl.daysToGo === 1 ? "day" : "days"} of logging`);
+    need.push(`${accl.daysToGo} more ${accl.daysToGo === 1 ? "day" : "days"}`);
   if (accl.logsToGo > 0)
-    need.push(`${accl.logsToGo} more ${accl.logsToGo === 1 ? "entry" : "entries"}`);
+    need.push(`${accl.logsToGo} more ${accl.logsToGo === 1 ? "log" : "logs"}`);
 
-  return (
-    <div className="panel experiments-locked">
-      <span className="experiments-lock" aria-hidden>
-        <svg viewBox="0 0 24 24" width="22" height="22">
-          <rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-          <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        </svg>
-      </span>
-      <div>
-        <h3>Unlocks once you've settled in</h3>
-        <p className="muted">
-          Experiments open after you've gotten a feel for plain logging — about
-          two days in. {need.length ? `Just ${need.join(" and ")} to go.` : ""}
-        </p>
-      </div>
-    </div>
-  );
+  return <LockedTeaser title="Locked" need={`${need.join(" and ")} to go.`} />;
 }
 
 function ReadyState({ seedLabel }: { seedLabel?: string }) {
@@ -208,9 +189,8 @@ function Creator({
       </div>
 
       <p className="muted experiment-hyp">
-        Over the next {DEFAULT_EXPERIMENT_DAYS} days, we'll quietly compare days
-        you log <strong>{label || "this"}</strong> against days you don't. No
-        pressure to do it daily.
+        {DEFAULT_EXPERIMENT_DAYS} days, comparing days with{" "}
+        <strong>{label || "this"}</strong> vs. without.
       </p>
 
       <div className="row experiment-actions">
