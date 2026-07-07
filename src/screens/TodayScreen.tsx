@@ -7,6 +7,8 @@ import { computeStreak } from "../domain/streak";
 import { QUADRANT_META } from "../domain/mood";
 import { PROFILES } from "../domain/profiles";
 import { GrowthMeter } from "../components/GrowthMeter";
+import { OneSmallThing } from "../components/OneSmallThing";
+import { bestBets } from "../domain/ledger";
 import "./TodayScreen.css";
 
 function greeting(now = new Date()): string {
@@ -23,6 +25,15 @@ export function TodayScreen() {
   const streak = computeStreak(state.logs);
   const profile = state.profile ? PROFILES[state.profile] : null;
   const meta = QUADRANT_META[dash.quadrant];
+
+  // When the reading calls for "one small win", point at the user's own data
+  // instead of leaving the advice generic.
+  const topBet = bestBets(state.logs)[0];
+  const lowRewardQuadrant = dash.quadrant === "numb" || dash.quadrant === "flat";
+  const advice =
+    lowRewardQuadrant && topBet
+      ? `${meta.advice} For you lately, that's looked like "${topBet.label}".`
+      : meta.advice;
 
   return (
     <div className="stack today">
@@ -62,12 +73,14 @@ export function TodayScreen() {
           )}
         </div>
 
-        {dash.hasData && <p className="board-advice">{meta.advice}</p>}
+        {dash.hasData && <p className="board-advice">{advice}</p>}
 
         <div className="board-trend">
           <TrendStrip logs={state.logs} />
         </div>
       </section>
+
+      <OneSmallThing />
 
       <section className="today-vitals" aria-label="Your rhythm and growth">
         <StreakNote streak={streak} />

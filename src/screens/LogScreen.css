@@ -25,3 +25,10 @@
   bottom: calc(4.5rem + env(safe-area-inset-bottom));
   margin-top: var(--s-2);
 }
+.log-plan-hint {
+  font-size: 0.88rem;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-control);
+  background: var(--accent-wash);
+  color: color-mix(in oklch, var(--accent) 55%, var(--ink));
+}

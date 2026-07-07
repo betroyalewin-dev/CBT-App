@@ -101,6 +101,12 @@ floor −0.02em.
 - **MoodGrid** — square valence×arousal pad; draggable/tappable dot; quadrant
   tints + emotion-word regions; 5-second first-use coach mark.
 - **PMSlider** — 0–10 Pleasure / Mastery sliders, default to last value, large thumb.
+- **EffortChips** (in Log) — optional 3-pill activation-cost rating (light / medium /
+  heavy); never blocks the two-tap fast path.
+- **OneSmallThing** — the BA action panel on Today: "best bets" (activities ranked
+  by return vs the user's own baseline, discounted by rated effort), the plan →
+  predict → compare loop, and the forecast-vs-reality read-back. Accent wash marks
+  the better-than-forecast hope moment.
 - **QuadrantPad** — the dashboard 2×2; smoothed dot, current quadrant highlighted,
   per-quadrant advice card below.
 - **TrendStrip** — compact valence/P/M sparkline + "this week vs last".

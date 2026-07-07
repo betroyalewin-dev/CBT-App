@@ -16,6 +16,7 @@ import type {
 } from "../domain/types";
 import type { Experiment } from "../domain/experiments";
 import type { LoopKey } from "../domain/loops";
+import type { ActivityPlan } from "../domain/plan";
 import {
   awardForLog,
   awardForPhq9,
@@ -48,6 +49,7 @@ const initialState: AppState = {
   experiments: [],
   lastAward: null,
   loopFeedback: {},
+  plan: null,
 };
 
 type Action =
@@ -65,6 +67,8 @@ type Action =
     }
   | { type: "addLog"; log: ActivityLog }
   | { type: "addActivity"; label: string }
+  | { type: "setPlan"; plan: ActivityPlan }
+  | { type: "cancelPlan" }
   | { type: "recordPHQ9"; result: PHQ9Result }
   | { type: "saveSafetyPlan"; plan: SafetyPlan }
   | { type: "addExperiment"; experiment: Experiment }
@@ -112,11 +116,33 @@ function reducer(state: AppState, action: Action): AppState {
         activities: action.payload.activities,
         anxiousFlag: action.payload.anxiousFlag,
       };
-    case "addLog":
+    case "addLog": {
+      // Logging the planned activity consumes the plan: the log carries the
+      // forecast so reality can be read against it, and the follow-through
+      // earns its own XP (BA core behaviour).
+      const plan = state.plan;
+      const fulfillsPlan =
+        plan !== null && action.log.activityLabel === plan.activityLabel;
+      const log: ActivityLog = fulfillsPlan
+        ? {
+            ...action.log,
+            planned: true,
+            anticipated: { pleasure: plan.predictedPleasure },
+          }
+        : action.log;
       return applyAward(
-        { ...state, logs: [...state.logs, action.log] },
-        awardForLog(action.log.planned),
+        {
+          ...state,
+          logs: [...state.logs, log],
+          plan: fulfillsPlan ? null : plan,
+        },
+        awardForLog(log.planned),
       );
+    }
+    case "setPlan":
+      return { ...state, plan: action.plan };
+    case "cancelPlan":
+      return state.plan === null ? state : { ...state, plan: null };
     case "addActivity":
       return state.activities.includes(action.label)
         ? state
