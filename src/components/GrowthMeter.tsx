@@ -13,9 +13,9 @@ export function GrowthMeter({ xp }: { xp: number }) {
   const dash = C * info.progress;
 
   return (
-    <section className="growth panel" aria-label="Your growth">
+    <section className="growth" aria-label="Your growth">
       <div className="growth-ring" aria-hidden>
-        <svg viewBox="0 0 64 64" width="64" height="64">
+        <svg viewBox="0 0 64 64" width="48" height="48">
           <circle className="growth-ring-track" cx="32" cy="32" r={R} />
           <circle
             className="growth-ring-fill"
@@ -31,7 +31,12 @@ export function GrowthMeter({ xp }: { xp: number }) {
         <p className="growth-label">{info.label}</p>
         <p className="growth-meta muted">
           {xp} pts
-          {info.toNext > 0 ? ` · ${info.toNext} to next stage` : ""}
+          {info.toNext > 0 && (
+            <>
+              {" · "}
+              <span className="growth-next">{info.toNext} to next</span>
+            </>
+          )}
         </p>
       </div>
     </section>

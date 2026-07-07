@@ -23,13 +23,15 @@
 .trend-bars {
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
   gap: 4px;
-  height: 88px;
+  height: 60px;
   padding-top: var(--s-2);
 }
 .trend-bar {
   flex: 1;
   min-width: 3px;
+  max-width: 10px;
   border-radius: var(--r-pill);
   background: linear-gradient(
     to top,

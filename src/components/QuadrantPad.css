@@ -11,30 +11,54 @@
   box-shadow: var(--shadow-1);
 }
 
+/* Quadrant washes — keyed by meaning, placed by corner.
+   x: reward (right = things land) · y: stress (top = overloaded) */
 .qp-q {
   position: absolute;
   width: 50%;
   height: 50%;
 }
-.qp-q--tr {
-  top: 0;
-  right: 0;
-  background: var(--q-stressed-wash);
-}
 .qp-q--tl {
   top: 0;
   left: 0;
-  background: var(--q-flat-wash);
 }
-.qp-q--br {
-  bottom: 0;
+.qp-q--tr {
+  top: 0;
   right: 0;
-  background: var(--q-thriving-wash);
 }
 .qp-q--bl {
   bottom: 0;
   left: 0;
+}
+.qp-q--br {
+  bottom: 0;
+  right: 0;
+}
+.qp-q--flat {
+  background: var(--q-flat-wash);
+}
+.qp-q--stressed {
+  background: var(--q-stressed-wash);
+}
+.qp-q--numb {
   background: var(--q-numb-wash);
+}
+.qp-q--thriving {
+  background: var(--q-thriving-wash);
+}
+/* Mix the highlight from each quadrant's own wash — mixing toward --surface
+   would rotate hue in oklch (white is declared with hue 0). */
+.qp-q--flat.is-current {
+  background: color-mix(in oklch, var(--q-flat) 22%, var(--q-flat-wash));
+}
+.qp-q--stressed.is-current {
+  background: color-mix(in oklch, var(--q-stressed) 22%, var(--q-stressed-wash));
+}
+.qp-q--numb.is-current {
+  background: color-mix(in oklch, var(--q-numb) 22%, var(--q-numb-wash));
+}
+.qp-q--thriving.is-current {
+  background: color-mix(in oklch, var(--q-thriving) 22%, var(--q-thriving-wash));
 }
 
 .qp-axis {
@@ -150,6 +174,21 @@
 .qp-dot--flat {
   background: var(--q-flat);
   color: var(--q-flat);
+}
+
+/* ── Compact map mode ─────────────────────────────────────────── */
+.qp--compact .qp-pad {
+  max-width: none;
+  border-radius: var(--r-control);
+  box-shadow: none;
+}
+.qp--compact .qp-dot {
+  width: 18px;
+  height: 18px;
+  border-width: 2.5px;
+}
+.qp--compact .qp-dot::after {
+  inset: -6px;
 }
 
 @keyframes qp-settle {
