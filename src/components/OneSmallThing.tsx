@@ -21,9 +21,9 @@ export function OneSmallThing() {
   const bets = bestBets(state.logs);
 
   return (
-    <section className="panel ost" aria-label="One small thing">
+    <section className="panel ost" aria-label="Tip">
       <header className="ost-head">
-        <h2>One small thing</h2>
+        <h2>Tip</h2>
       </header>
 
       {plan ? (
