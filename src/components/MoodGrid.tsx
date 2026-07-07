@@ -89,14 +89,25 @@ export function MoodGrid({ value, onChange, ghost }: Props) {
             onPointerUp={() => setDragging(false)}
             onPointerCancel={() => setDragging(false)}
           >
-            {/* quadrant tints */}
-            <span className="mg-q mg-q--tl" aria-hidden />
-            <span className="mg-q mg-q--tr" aria-hidden />
-            <span className="mg-q mg-q--bl" aria-hidden />
-            <span className="mg-q mg-q--br" aria-hidden />
+            {/* soft quadrant field — corners identified by position + label, not color alone */}
+            <span className="mg-field" aria-hidden />
 
             <span className="mg-axis mg-axis--v" aria-hidden />
             <span className="mg-axis mg-axis--h" aria-hidden />
+            <span className="mg-origin" aria-hidden />
+
+            <span className="mg-corner-label mg-corner-label--tl" aria-hidden>
+              anxious
+            </span>
+            <span className="mg-corner-label mg-corner-label--tr" aria-hidden>
+              excited
+            </span>
+            <span className="mg-corner-label mg-corner-label--bl" aria-hidden>
+              flat
+            </span>
+            <span className="mg-corner-label mg-corner-label--br" aria-hidden>
+              calm
+            </span>
 
             {gpos && (
               <span
@@ -126,6 +137,7 @@ export function MoodGrid({ value, onChange, ghost }: Props) {
 
       {region && (
         <p className="mg-readout">
+          <span className={`mg-readout-dot mg-readout-dot--${region.corner}`} aria-hidden />
           <strong>{region.label}</strong>
         </p>
       )}

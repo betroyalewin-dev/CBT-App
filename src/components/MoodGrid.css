@@ -60,55 +60,103 @@
   box-shadow: var(--shadow-1);
 }
 
-/* Quadrant tints */
-.mg-q {
+/* Soft quadrant field: four corner glows blended into the surface rather
+   than hard-edged tiles — reads as a continuous "mood weather" gradient.
+   Corners still carry a label (below) so meaning never rides on color alone. */
+.mg-field {
   position: absolute;
-  width: 50%;
-  height: 50%;
+  inset: 0;
+  background: radial-gradient(
+      ellipse 75% 75% at 0% 0%,
+      var(--q-flat-wash) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 75% 75% at 100% 0%,
+      var(--q-stressed-wash) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 75% 75% at 0% 100%,
+      var(--q-numb-wash) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 75% 75% at 100% 100%,
+      var(--q-thriving-wash) 0%,
+      transparent 65%
+    );
 }
-/* tl: unpleasant + high energy → agitated */
-.mg-q--tl { top: 0; left: 0; background: var(--q-flat-wash); }
-/* tr: pleasant + high energy → excited */
-.mg-q--tr { top: 0; right: 0; background: var(--q-stressed-wash); }
-/* bl: unpleasant + calm → numb */
-.mg-q--bl { bottom: 0; left: 0; background: var(--q-numb-wash); }
-/* br: pleasant + calm → content */
-.mg-q--br { bottom: 0; right: 0; background: var(--q-thriving-wash); }
 
-/* Crosshair lines */
+/* Crosshair lines — soft dashed reference, not a hard grid */
 .mg-axis {
   position: absolute;
-  background: var(--line);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--line) 0 4px,
+    transparent 4px 9px
+  );
 }
 .mg-axis--v {
   left: 50%;
-  top: 0;
-  bottom: 0;
+  top: var(--s-4);
+  bottom: var(--s-4);
   width: 1px;
 }
 .mg-axis--h {
   top: 50%;
-  left: 0;
-  right: 0;
+  left: var(--s-4);
+  right: var(--s-4);
   height: 1px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--line) 0 4px,
+    transparent 4px 9px
+  );
 }
+
+/* Neutral origin marker */
+.mg-origin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  transform: translate(-50%, -50%);
+}
+
+/* Quadrant identifier labels — pairs color with a word, per corner */
+.mg-corner-label {
+  position: absolute;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+}
+.mg-corner-label--tl { top: var(--s-2); left: var(--s-3); }
+.mg-corner-label--tr { top: var(--s-2); right: var(--s-3); }
+.mg-corner-label--bl { bottom: var(--s-2); left: var(--s-3); }
+.mg-corner-label--br { bottom: var(--s-2); right: var(--s-3); }
 
 /* ── Dot ─────────────────────────────────────────────────────── */
 
 .mg-dot {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--primary);
   border: 3px solid var(--surface);
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--shadow-2), 0 0 0 6px var(--primary-ring);
   transform: translate(-50%, -50%);
   transition: left var(--dur) var(--ease-out), top var(--dur) var(--ease-out);
 }
 .mg-dot--ghost {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: transparent;
   border: 2px dashed var(--accent);
   box-shadow: none;
@@ -144,24 +192,38 @@
 }
 
 .mg-axis-endpoint {
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   color: var(--ink-muted);
   letter-spacing: 0.01em;
 }
 
 .mg-axis-name {
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  color: var(--ink-muted);
+  color: var(--ink);
   letter-spacing: 0.03em;
 }
 
 /* ── Readout ─────────────────────────────────────────────────── */
 
 .mg-readout {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
   font-size: 0.95rem;
   color: var(--ink);
 }
 .mg-readout strong {
   font-family: var(--font-display);
 }
+
+.mg-readout-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mg-readout-dot--tl { background: var(--q-flat); }
+.mg-readout-dot--tr { background: var(--q-stressed); }
+.mg-readout-dot--bl { background: var(--q-numb); }
+.mg-readout-dot--br { background: var(--q-thriving); }
