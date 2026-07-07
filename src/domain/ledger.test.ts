@@ -65,12 +65,12 @@ describe("activityLedger", () => {
       good("hike"), good("hike"),
       good("read"), good("read"),
     ];
-    logs[0].effort = 3;
-    logs[1].effort = 3;
+    logs[0].effort = 10;
+    logs[1].effort = 10;
     const { stats } = activityLedger(logs, NOW);
     const hike = stats.find((s) => s.label === "hike")!;
     const read = stats.find((s) => s.label === "read")!;
-    expect(hike.avgEffort).toBe(3);
+    expect(hike.avgEffort).toBe(10);
     expect(read.avgEffort).toBeNull();
     // Same benefit, but heavy effort ranks hike below unrated read.
     expect(read.worth).toBeGreaterThan(hike.worth);
@@ -109,20 +109,20 @@ describe("bestBets", () => {
       good("read"), good("read"),
       dull("scroll"), dull("scroll"),
     ];
-    logs[0].effort = 3;
-    logs[1].effort = 3;
-    logs[2].effort = 1;
-    logs[3].effort = 1;
+    logs[0].effort = 10;
+    logs[1].effort = 10;
+    logs[2].effort = 0;
+    logs[3].effort = 0;
     const bets = bestBets(logs, NOW);
     expect(bets[0].label).toBe("read");
   });
 });
 
 describe("effortWord", () => {
-  it("maps the 1–3 scale to words", () => {
+  it("maps the 0–10 scale to words", () => {
     expect(effortWord(1)).toBe("light");
-    expect(effortWord(1.4)).toBe("light");
-    expect(effortWord(2)).toBe("medium");
-    expect(effortWord(3)).toBe("heavy");
+    expect(effortWord(3.9)).toBe("light");
+    expect(effortWord(5)).toBe("medium");
+    expect(effortWord(9)).toBe("heavy");
   });
 });
