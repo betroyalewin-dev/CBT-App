@@ -38,3 +38,13 @@ wellness/CBT companion (Behavioral Activation), not a diagnostic device.
 - No backend/API calls — everything is client-side and synchronous.
 - Keep clinical logic in `src/domain/` pure and tested; UI components stay
   presentational.
+
+## PR workflow
+
+- After opening a PR from a Claude Code session, mark it ready for review
+  (undraft) and merge it into `main` once required CI checks pass (or
+  immediately if the repo has no required checks configured). Don't wait
+  for a human approval step.
+- This auto-merge policy applies only to PRs Claude itself opens going
+  forward — it does not retroactively apply to PRs already open before
+  this policy existed.
