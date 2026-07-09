@@ -60,7 +60,7 @@ export const QUADRANT_META: Record<
   thriving: {
     title: "Engaged & calm",
     advice:
-      "Protect what's working — keep the activities that land on your calendar.",
+      "Protect what's working. Keep the activities that land on your calendar.",
   },
   stressed: {
     title: "Busy & rewarding",

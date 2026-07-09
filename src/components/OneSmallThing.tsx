@@ -21,9 +21,9 @@ export function OneSmallThing() {
   const bets = bestBets(state.logs);
 
   return (
-    <section className="panel ost" aria-label="Tip">
+    <section className="panel ost" aria-label="One small thing">
       <header className="ost-head">
-        <h2>Tip</h2>
+        <h2>One small thing</h2>
       </header>
 
       {plan ? (
@@ -62,7 +62,7 @@ export function OneSmallThing() {
           ) : (
             !outcome && (
               <p className="muted ost-teach">
-                Log a few different activities — not just moods — and your best
+                Log a few different activities, not just moods, and your best
                 bets will show up here.
               </p>
             )
@@ -105,16 +105,16 @@ function OutcomeNote({
 }) {
   const read =
     outcome.delta >= 1
-      ? "Better than your forecast — depression tends to under-predict."
+      ? "Better than your forecast. Depression tends to under-predict."
       : outcome.delta <= -1
-        ? "Less than hoped — honest data, not a failure."
-        : "About what you expected — a forecast you can trust counts too.";
+        ? "Less than hoped. Honest data, not a failure."
+        : "About what you expected. A forecast you can trust counts too.";
   return (
     <div
       className={`ost-outcome ${outcome.delta >= 1 ? "ost-outcome--beat" : ""}`}
     >
       <p className="ost-outcome-line">
-        You did it — {outcome.log.activityLabel}. Predicted{" "}
+        You did it: {outcome.log.activityLabel}. Predicted{" "}
         <span className="mono">{outcome.predicted}/10</span>, landed at{" "}
         <span className="mono">{outcome.actual}/10</span>.
       </p>

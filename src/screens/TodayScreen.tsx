@@ -69,7 +69,7 @@ export function TodayScreen() {
             <div className="board-reading">
               <h2>Let's get your first read</h2>
               <p className="muted board-empty-note">
-                Your dot appears after your first log — just your own taps,
+                Your dot appears after your first log. Just your own taps,
                 smoothed.
               </p>
             </div>
@@ -132,7 +132,7 @@ function StreakNote({
       <p className="vital-lead">{streak.days}-day rhythm</p>
       {streak.graceUsed && (
         <p className="muted vital-note">
-          A missed day is fine — you're still going.
+          A missed day is fine. You're still going.
         </p>
       )}
     </div>

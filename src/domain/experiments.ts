@@ -131,7 +131,7 @@ export function readExperiment(exp: Experiment, r: ExperimentResult): string {
   const what = `"${exp.activityLabel}"`;
   const unit = metricLabel(exp.metric);
   if (!r.hasEnough) {
-    return `Not enough yet to compare. Keep logging — we need a few days both with and without ${what} before anything is worth reading.`;
+    return `Not enough yet to compare. Keep logging, we need a few days both with and without ${what} before anything is worth reading.`;
   }
   const d = r.delta ?? 0;
   if (Math.abs(d) < 0.6) {
@@ -140,5 +140,5 @@ export function readExperiment(exp: Experiment, r: ExperimentResult): string {
   const dir = d > 0 ? "higher" : "lower";
   return `On the days you logged ${what}, your ${unit} ran about ${Math.abs(
     d,
-  ).toFixed(1)} ${dir} than other days. Small, confounded sample — a hunch worth holding, not proof.`;
+  ).toFixed(1)} ${dir} than other days. Small, confounded sample, a hunch worth holding, not proof.`;
 }

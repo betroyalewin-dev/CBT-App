@@ -112,11 +112,11 @@ function LoopCard({
         </>
       ) : answered === "confirmed" ? (
         <p className="muted">
-          Thanks — that helps. We'll lean on tools for {meta.title} first.
+          Thanks, that helps. We'll lean on tools for {meta.title} first.
         </p>
       ) : (
         <p className="muted">
-          Noted — we'll keep watching and adjust the hypothesis as more data comes in.
+          Noted. We'll keep watching and adjust the hypothesis as more data comes in.
         </p>
       )}
     </article>

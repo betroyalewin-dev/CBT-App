@@ -36,7 +36,7 @@ export const LOOP_META: Record<LoopKey, LoopMeta> = {
     key: "overwhelm",
     title: "the overload pattern",
     question:
-      "Does it feel like there's just too much coming at you right now — hard to know where to start?",
+      "Does it feel like there's just too much coming at you right now, hard to know where to start?",
     blurb:
       "Demands pile up, it feels unmanageable, and that feeling becomes evidence that it is.",
   },

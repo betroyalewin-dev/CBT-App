@@ -105,7 +105,7 @@ export function SafetyScreen({ embedded = false }: { embedded?: boolean }) {
                     ))}
                   </ul>
                 ) : (
-                  <p className="muted">— not filled in yet —</p>
+                  <p className="muted">Not filled in yet.</p>
                 )}
               </div>
             ))}

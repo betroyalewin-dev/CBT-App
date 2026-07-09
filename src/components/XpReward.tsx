@@ -39,7 +39,7 @@ export function XpReward() {
         <div className="xpreward-lines">
           {shown.levelUp ? (
             <p className="xpreward-levelup">
-              New stage — <strong>{level.label}</strong>
+              New stage: <strong>{level.label}</strong>
             </p>
           ) : null}
           {shown.items.map((it, i) => (
