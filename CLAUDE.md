@@ -38,6 +38,9 @@ wellness/CBT companion (Behavioral Activation), not a diagnostic device.
 - No backend/API calls — everything is client-side and synchronous.
 - Keep clinical logic in `src/domain/` pure and tested; UI components stay
   presentational.
+- Any new or edited user-facing copy in `src/screens/` or `src/components/`
+  should go through the `humanizer` skill using `docs/VOICE.md` as the style
+  reference before landing.
 
 ## PR workflow
 
