@@ -73,11 +73,11 @@ export function MoodGrid({ value, onChange, ghost }: Props) {
             className="moodgrid"
             role="slider"
             tabIndex={0}
-            aria-label="Mood pad: left–right is how you feel (unpleasant to pleasant), up–down is energy level (calm to energised)"
+            aria-label="Mood pad: left to right is how you feel (unpleasant to pleasant), up to down is energy level (calm to energised)"
             aria-valuetext={
               value
                 ? `${region?.label}, valence ${value.valence}, energy ${value.arousal}`
-                : "not set — tap to place your mood"
+                : "not set, tap to place your mood"
             }
             onKeyDown={onKeyDown}
             onPointerDown={(e) => {

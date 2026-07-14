@@ -42,7 +42,7 @@ export function LoopDiagram() {
         viewBox="0 0 300 350"
         width="100%"
         role="img"
-        aria-label="A maintenance cycle: low mood leads you to do less and withdraw, which means fewer rewarding moments, which lowers mood further — and round again."
+        aria-label="A maintenance cycle: low mood leads you to do less and withdraw, which means fewer rewarding moments, which lowers mood further, and round again."
       >
         <defs>
           <marker

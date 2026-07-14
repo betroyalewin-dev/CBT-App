@@ -26,7 +26,7 @@ export function StepsDiagram() {
         viewBox="0 0 240 168"
         width="100%"
         role="img"
-        aria-label="A mood trend climbing over time — with small dips — as small actions add up."
+        aria-label="A mood trend climbing over time, with small dips, as small actions add up."
       >
         <line className="steps-base" x1="10" y1="158" x2="230" y2="158" />
         <path className="steps-line" d={d} pathLength={100} fill="none" />

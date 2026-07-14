@@ -55,7 +55,7 @@ export function TrendStrip({ logs, now = Date.now(), days = 14 }: Props) {
 
       {present.length === 0 ? (
         <p className="muted trend-empty">
-          Your mood line appears as you log — even a tap a day is enough.
+          Your mood line appears as you log. Even a tap a day is enough.
         </p>
       ) : (
         <div className="trend-bars" aria-hidden>

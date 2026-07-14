@@ -261,13 +261,13 @@ export function Onboarding() {
             </header>
             <LoopDiagram />
             <p>
-              When your mood drops, it's natural to do less — you cancel,
+              When your mood drops, it's natural to do less. You cancel,
               withdraw, wait for energy that doesn't come. But doing less means
               fewer of the small moments that would lift you, so your mood sinks
               a little further, and the next thing feels even harder.
             </p>
             <p className="muted">
-              That's the loop, and it's not a character flaw — it's how the
+              That's the loop. It's not a character flaw, it's how the
               illness keeps itself going.
             </p>
             <button
@@ -288,15 +288,15 @@ export function Onboarding() {
             <StepsDiagram />
             <p>
               Instead of waiting to feel better before you do things, you do one
-              small thing first — and let a little reward nudge your mood up,
-              which makes the next thing a bit easier. That's how the loop runs
+              small thing first. A little reward nudges your mood up, which
+              makes the next thing a bit easier. That's how the loop runs
               in reverse.
             </p>
             <p>
               The catch: what actually feels rewarding is different for everyone.
               A walk lifts one person and does nothing for the next. So this app
               helps you find the activities that genuinely move <em>your</em>{" "}
-              mood — and shows you the improvement as it adds up.
+              mood, and shows you the improvement as it adds up.
             </p>
             <p className="muted onboard-trust">
               Everything stays on your device. It's a companion, not a doctor,
@@ -348,7 +348,7 @@ export function Onboarding() {
           <QuestionPage
             sectionLabel="Your picture"
             stepText={`${axisIndex + 1} of ${AXIS_ITEMS.length}`}
-            context="There are no right answers — just go with your gut."
+            context="There are no right answers, just go with your gut."
             prompt={AXIS_ITEMS[axisIndex].prompt}
             options={AXIS_OPTIONS}
             value={axis[axisIndex] >= 0 ? axis[axisIndex] : null}
@@ -374,8 +374,8 @@ export function Onboarding() {
               </ul>
             </div>
             <p className="muted">
-              This is a starting point that shapes suggestions — not a diagnosis,
-              and it'll move as your data grows.
+              This is a starting point that shapes suggestions, not a diagnosis.
+              It'll move as your data grows.
             </p>
             <button className="btn btn--primary btn--block" onClick={() => go("values")}>
               Makes sense
@@ -419,7 +419,7 @@ export function Onboarding() {
         {step === "seed" && (
           <StepWrap
             title="What lifts you, and what drains you?"
-            subtitle="Add a few of each. These become your starting list to log — and over time, your data shows which ones really do what."
+            subtitle="Add a few of each. These become your starting list to log. Over time, your data shows which ones really do what."
           >
             <SeedBucket
               tone="lift"
@@ -437,7 +437,7 @@ export function Onboarding() {
             <SeedBucket
               tone="drain"
               label="Tends to drain me"
-              hint="things that usually leave you worse — worth watching, not avoiding"
+              hint="things that usually leave you worse, worth watching, not avoiding"
               items={disliked}
               suggestions={DRAINING_SUGGESTIONS.filter(
                 (s) => !disliked.includes(s),
@@ -461,7 +461,7 @@ export function Onboarding() {
 
         {step === "firstlog" && (
           <StepWrap
-            title="One last thing — how are you right now?"
+            title="One last thing: how are you right now?"
             subtitle="Tap where you are on the pad. This is your first entry."
           >
             <MoodGrid value={firstMood} onChange={setFirstMood} />

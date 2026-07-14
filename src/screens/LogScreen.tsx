@@ -92,8 +92,8 @@ export function LogScreen() {
         )}
         {fulfillsPlan && state.plan && (
           <p className="muted log-plan-hint">
-            You planned this one — predicted enjoyment{" "}
-            {state.plan.predictedPleasure}/10. No pressure either way; honest
+            You planned this one. Predicted enjoyment was{" "}
+            {state.plan.predictedPleasure}/10. No pressure either way, honest
             numbers are the whole point.
           </p>
         )}

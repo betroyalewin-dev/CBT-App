@@ -35,7 +35,7 @@ export function QuadrantPad({ axis, quadrant, hasData, compact = false }: Props)
         aria-label={
           hasData
             ? `Your recent position: ${QUADRANT_META[quadrant].title}. Reward ${axis.reward} of 100, load ${axis.stress} of 100.`
-            : "Not enough data yet — log a few times to see your position."
+            : "Not enough data yet. Log a few times to see your position."
         }
       >
         {QUADS.map((q) => (

@@ -47,7 +47,7 @@ export function generateInsights(
       out.push({
         id: `lever:${label}`,
         kind: "lever",
-        text: `On the ${group.length} times you logged "${label}", your mood averaged ${lift.toFixed(1)} higher than usual. Small sample — worth testing, not proof.`,
+        text: `On the ${group.length} times you logged "${label}", your mood averaged ${lift.toFixed(1)} higher than usual. Small sample, worth testing, not proof.`,
         sampleSize: group.length,
         experimentPrompt: `Try "${label}" on purpose this week and predict how it'll feel beforehand.`,
         activityLabel: label,
@@ -85,7 +85,7 @@ export function generateInsights(
       kind: "prediction-gap",
       text: `${beats.length} of ${planned.length} planned activities turned out better than you predicted. Your forecasts may be running pessimistic.`,
       sampleSize: planned.length,
-      experimentPrompt: `Before your next planned activity, write down your prediction — then compare.`,
+      experimentPrompt: `Before your next planned activity, write down your prediction. Then compare.`,
     });
   }
 
