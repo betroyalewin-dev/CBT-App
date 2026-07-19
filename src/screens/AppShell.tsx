@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { TabBar } from "../components/TabBar";
 import { XpReward } from "../components/XpReward";
+import { RecheckReminder } from "../components/RecheckReminder";
 import "./AppShell.css";
 
 export function AppShell() {
@@ -16,6 +17,7 @@ export function AppShell() {
         <Outlet />
       </main>
       <XpReward />
+      <RecheckReminder />
       <TabBar />
     </div>
   );
